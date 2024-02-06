@@ -1,59 +1,146 @@
+import { Image } from 'expo-image';
+import { Tabs } from 'expo-router';
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import {
+  BLACK_COLOR,
+  COVER_COLOR,
+  INACTIVE_COLOR,
+  WHITE_COLOR,
+} from '@/constants/Colors';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+const TabsLayout = () => {
   return (
     <Tabs
+      initialRouteName="profile"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
+        tabBarStyle: {
+          height: 84,
+          borderTopWidth: 0,
+          backgroundColor: COVER_COLOR,
+        },
+        headerTitleAlign: 'left',
+        tabBarActiveTintColor: WHITE_COLOR,
+        tabBarInactiveTintColor: INACTIVE_COLOR,
+        headerShown: true,
+        tabBarShowLabel: false,
+        headerTitleStyle: {
+          color: WHITE_COLOR,
+          fontFamily: 'Mont_700',
+          fontSize: 32,
+        },
+        headerStyle: {
+          height: 92,
+          backgroundColor: BLACK_COLOR,
+          shadowOpacity: 0,
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="play"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+          href: '/play',
+          title: 'Игра',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={styles.tabBarItemContainer}>
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={
+                  focused
+                    ? require('assets/icons/tab-swords-active.svg')
+                    : require('assets/icons/tab-swords-inactive.svg')
+                }
+              />
+              <Text style={[styles.tabBarItemTitle, { color }]}>Игра</Text>
+            </View>
           ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="my-votes"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          href: '/my-votes',
+          title: 'Мои Ставки',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={styles.tabBarItemContainer}>
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={
+                  focused
+                    ? require('assets/icons/tab-votes-active.svg')
+                    : require('assets/icons/tab-votes-inactive.svg')
+                }
+              />
+              <Text style={[styles.tabBarItemTitle, { color }]}>
+                Мои Ставки
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="leaderboard"
+        options={{
+          href: '/leaderboard',
+          title: 'Лидерборд',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={styles.tabBarItemContainer}>
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={
+                  focused
+                    ? require('assets/icons/tab-trophy-active.svg')
+                    : require('assets/icons/tab-trophy-inactive.svg')
+                }
+              />
+              <Text style={[styles.tabBarItemTitle, { color }]}>Лидерборд</Text>
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          href: '/profile',
+          title: 'Профиль',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={styles.tabBarItemContainer}>
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={
+                  focused
+                    ? require('assets/icons/tab-user-active.svg')
+                    : require('assets/icons/tab-user-inactive.svg')
+                }
+              />
+              <Text style={[styles.tabBarItemTitle, { color }]}>Профиль</Text>
+            </View>
+          ),
         }}
       />
     </Tabs>
   );
-}
+};
+
+export default TabsLayout;
+
+const styles = StyleSheet.create({
+  tabBarItemContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: 7,
+    backgroundColor: 'transparent',
+  },
+  tabBarItemTitle: {
+    fontFamily: 'Mont_500',
+    marginTop: 6,
+    fontSize: 10,
+  },
+  headerProfileButtonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginRight: 16,
+    gap: 20,
+  },
+});
