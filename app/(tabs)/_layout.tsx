@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -9,8 +9,23 @@ import {
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/constants/Colors';
+import { useSession } from '@/context/ctx';
 
 const TabsLayout = () => {
+  const { session, isLoading } = useSession();
+
+  // You can keep the splash screen open, or render a loading screen like we do here.
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  // Only require authentication within the (app) group's layout as users
+  // need to be able to access the (auth) group and sign in again.
+  if (!session) {
+    // On web, static rendering will stop here as the user is not authenticated
+    // in the headless Node process that the pages are rendered in.
+    return <Redirect href="/login" />;
+  }
   return (
     <Tabs
       initialRouteName="profile"

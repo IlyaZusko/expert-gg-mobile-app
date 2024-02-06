@@ -5,7 +5,8 @@
     "paths": {
       "@/*": [ "./*" ],
       "colors/*": ["./constants/Colors/*"],
-      "assets/*": ["./assets/*"]
+      "assets/*": ["./assets/*"],
+      "context/*": ["./context/*"]
     }
   },
   "include": [

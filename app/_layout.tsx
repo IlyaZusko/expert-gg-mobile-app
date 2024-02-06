@@ -4,8 +4,10 @@ import {
   Montserrat_500Medium as Mont_500,
   Montserrat_700Bold as Mont_700,
 } from '@expo-google-fonts/montserrat';
-import { SplashScreen, Stack } from 'expo-router';
+import { Slot, SplashScreen, Stack } from 'expo-router';
 import React, { useEffect } from 'react';
+
+import { SessionProvider } from '@/context/ctx';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,11 +28,14 @@ const RootLayout = () => {
     return null;
   }
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <SessionProvider>
+      {/* <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      /> */}
+      <Slot />
+    </SessionProvider>
   );
 };
 
