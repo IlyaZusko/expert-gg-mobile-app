@@ -1,14 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 
-import { BLACK_COLOR } from '@/constants/Colors';
+import { Play } from '@/screens';
 
 const PlayScreen = () => {
-  return (
-    <View style={{ flex: 1, backgroundColor: BLACK_COLOR }}>
-      <Text style={{ fontFamily: 'Mont_400' }}>Игра</Text>
-    </View>
-  );
+  return <Play />;
 };
 
 export default PlayScreen;
