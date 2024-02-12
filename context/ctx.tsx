@@ -1,8 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { router } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import React from 'react';
 
 import { useStorageState } from './useStorageState';
+
+import { auth } from '@/firebaseConfig';
 
 const AuthContext = React.createContext<{
   signIn: (email: string, password: string) => void;
@@ -31,12 +34,28 @@ export function useSession() {
 export function SessionProvider(props: React.PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
 
+  const login = async (email: string, password: string) => {
+    try {
+      const user = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      return user.user.getIdToken();
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         signIn: async (email, password) => {
-          setSession('xxx');
-          router.push('/play');
+          const res = await login(email, password);
+          if(res) {
+            setSession(res);
+            router.push('/play');
+          }
         },
         signOut: () => {
           setSession(null);
