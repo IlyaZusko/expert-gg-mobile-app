@@ -3,13 +3,13 @@ import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+import { useSession } from '@/context/ctx';
 import {
   BLACK_COLOR,
   COVER_COLOR,
   INACTIVE_COLOR,
   WHITE_COLOR,
-} from '@/constants/Colors';
-import { useSession } from '@/context/ctx';
+} from '@/helpers/constants/Colors';
 
 const TabsLayout = () => {
   const { session, isLoading } = useSession();

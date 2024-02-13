@@ -8,3 +8,5 @@ export { default as GameSelectorButton } from './GameSelectorButton';
 
 // OTHER
 export { default as MatchBlock } from './MatchBlock';
+export { default as HeaderFilterDate } from './HeaderFilterDate';
+export { default as EmptyListMatches } from './EmptyListMatches';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { ACCENT_BLUE_COLOR, WHITE_COLOR } from '@/constants/Colors';
+import { ACCENT_BLUE_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
 
 interface IDefaultButton {
   label: string;

@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { BLACK_COLOR, WHITE_COLOR } from '@/constants/Colors';
+import { BLACK_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
 
 interface IGameSelectorButton {
   title: string;

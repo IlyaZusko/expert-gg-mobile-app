@@ -7,8 +7,10 @@ import {
 } from '@expo-google-fonts/montserrat';
 import { Slot, SplashScreen } from 'expo-router';
 import React, { useEffect } from 'react';
+import { Provider } from 'react-redux';
 
 import { SessionProvider } from '@/context/ctx';
+import store from '@/store';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,9 +32,11 @@ const RootLayout = () => {
     return null;
   }
   return (
-    <SessionProvider>
-      <Slot />
-    </SessionProvider>
+    <Provider store={store}>
+      <SessionProvider>
+        <Slot />
+      </SessionProvider>
+    </Provider>
   );
 };
 

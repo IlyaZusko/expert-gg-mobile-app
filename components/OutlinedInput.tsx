@@ -11,7 +11,7 @@ import {
   ERROR_RED_COLOR,
   INACTIVE_COLOR,
   WHITE_COLOR,
-} from '@/constants/Colors';
+} from '@/helpers/constants/Colors';
 
 interface IOutlinedInput
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {

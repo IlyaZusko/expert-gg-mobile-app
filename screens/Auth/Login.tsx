@@ -7,12 +7,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LogInValidationSchema } from './utils';
 
 import { DefaultButton, OutlinedInput, SocialLoginButton } from '@/components';
+import { useSession } from '@/context/ctx';
 import {
   LINEAR_END_COLOR,
   LINEAR_START_COLOR,
   WHITE_COLOR,
-} from '@/constants/Colors';
-import { useSession } from '@/context/ctx';
+} from '@/helpers/constants/Colors';
 
 interface LogInValues {
   email: string;

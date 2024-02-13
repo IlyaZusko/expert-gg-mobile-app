@@ -2,7 +2,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { INACTIVE_COLOR, WHITE_COLOR } from '@/constants/Colors';
+import { INACTIVE_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
 
 interface ISocialLoginButton {
   label: string;
