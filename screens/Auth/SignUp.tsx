@@ -1,14 +1,17 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { LogInValidationSchema } from './utils';
+import { SignUpValidationSchema } from './utils';
 
-import { DefaultButton, OutlinedInput, SocialLoginButton } from '@/components';
+import { DefaultButton, OutlinedInput } from '@/components';
 import { useSession } from '@/context/ctx';
+import { auth, db } from '@/firebaseConfig';
 import {
   GREY_TEXT_COLOR,
   LINEAR_END_COLOR,
@@ -16,30 +19,43 @@ import {
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
 
-interface LogInValues {
+interface SignUpValues {
+  username: string;
   email: string;
   password: string;
+  passwordConfirm: string;
 }
 
 const initialValues = {
+  username: 'ilyaZusko',
   email: 'ilyazusko.dev@gmail.com',
   password: 'Gjgeufq1',
-  // email: '',
-  // password: '',
+  passwordConfirm: 'Gjgeufq1',
 };
 
-const Login = () => {
+const SignUp = () => {
   const { signIn } = useSession();
 
-  const formik = useFormik<LogInValues>({
+  const formik = useFormik<SignUpValues>({
     initialValues,
-    validationSchema: LogInValidationSchema,
+    validationSchema: SignUpValidationSchema,
     enableReinitialize: true,
     validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async (values) => {
-      const { email, password } = values;
-      signIn(email, password);
+      const { username, email, passwordConfirm } = values;
+      const user = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        passwordConfirm,
+      );
+
+      const userid = user.user.uid;
+      await setDoc(doc(db, 'users', userid), {
+        username,
+        email,
+      });
+      signIn(email, passwordConfirm);
     },
   });
 
@@ -60,6 +76,13 @@ const Login = () => {
         <View style={styles.contentContainer}>
           <View style={styles.formContainer}>
             <OutlinedInput
+              placeholder="Никнейм..."
+              inputType="text"
+              value={values.username}
+              onChange={(v) => setFieldValue('username', v)}
+              error={errors.username}
+            />
+            <OutlinedInput
               placeholder="Электронная почта..."
               inputType="email"
               value={values.email}
@@ -74,28 +97,36 @@ const Login = () => {
               onChange={(v) => setFieldValue('password', v)}
               error={errors.password}
             />
-            <DefaultButton label="Войти" onClick={() => submitForm()} />
+            <OutlinedInput
+              placeholder="Пароль еще раз..."
+              inputType="text"
+              isSecureText
+              value={values.passwordConfirm}
+              onChange={(v) => setFieldValue('passwordConfirm', v)}
+              error={errors.passwordConfirm}
+            />
+            <DefaultButton
+              label="Зарегистрироваться"
+              onClick={() => submitForm()}
+            />
           </View>
-          <Text style={styles.socialSignInTip}>
-            Или войдите с помощью социальных сетей
-          </Text>
-          <View style={styles.socialButtonsContainer}>
-            <SocialLoginButton label="Google" />
-            <SocialLoginButton label="Facebook" />
-            <SocialLoginButton label="Apple" />
-            <SocialLoginButton label="Twitter" />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={styles.termsTitle}>Еще нет аккаунта? </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingTop: 100,
+            }}
+          >
+            <Text style={styles.termsTitle}>Уже есть аккаунт? </Text>
             <TouchableOpacity>
               <Text
                 style={[
                   styles.termsTitle,
                   { color: WHITE_COLOR, textDecorationLine: 'underline' },
                 ]}
-                onPress={() => router.push('/sign-up')}
+                onPress={() => router.push('/login')}
               >
-                Зарегистрироваться
+                Войти
               </Text>
             </TouchableOpacity>
           </View>
@@ -105,7 +136,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
 
 const styles = StyleSheet.create({
   wrapper: {

@@ -41,7 +41,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
         email,
         password
       );
-      return user.user.getIdToken();
+      return user.user.uid;
     } catch (error) {
       console.log('error', error);
     }

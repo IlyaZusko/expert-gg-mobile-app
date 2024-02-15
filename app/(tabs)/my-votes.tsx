@@ -1,12 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+
+import { MyVotes } from '@/screens';
 
 const MyVotesScreen = () => {
-  return (
-    <View>
-      <Text>MyVotesScreen</Text>
-    </View>
-  );
+  return <MyVotes />;
 };
 
 export default MyVotesScreen;

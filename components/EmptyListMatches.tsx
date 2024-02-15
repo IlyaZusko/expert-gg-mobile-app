@@ -2,6 +2,8 @@ import { Image } from 'expo-image';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { GREY_TEXT_COLOR } from '@/helpers/constants/Colors';
+
 const EmptyListMatches = () => {
   return (
     <View style={styles.wrapper}>
@@ -31,6 +33,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Mont_400',
     fontSize: 22,
     textAlign: 'center',
-    color: '#959595',
+    color: GREY_TEXT_COLOR,
   },
 });

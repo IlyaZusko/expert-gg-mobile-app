@@ -6,6 +6,7 @@ export interface IMatchesList {
     name: string;
   };
   opponents: IOpponent[];
+  voted?: boolean;
 }
 
 interface IOpponent {

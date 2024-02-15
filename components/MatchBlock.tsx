@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
 import { Image } from 'expo-image';
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -9,11 +11,16 @@ import {
   View,
 } from 'react-native';
 
+import TeamButtonSelect from './TeamButton';
+import VoteStatusBadge from './VoteStatusBadge';
+
+import { db } from '@/firebaseConfig';
 import {
   ACCENT_BLUE_COLOR,
   ACCENT_GOLD_COLOR,
   BLACK_COLOR,
   COVER_COLOR,
+  GREY_TEXT_COLOR,
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
@@ -21,24 +28,58 @@ import { IMatchesList } from '@/store/models/Matches';
 
 interface IMatchBlock {
   item: IMatchesList;
+  userId?: string | null;
+  refetch: () => void;
 }
 
-const MatchBlock: React.FC<IMatchBlock> = ({ item }) => {
-  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+interface IBet {
+  coinsAmount: string;
+}
 
-  const handleSelectTeam = (teamName: string) => {
+const initialValues = {
+  coinsAmount: '',
+};
+
+const MatchBlock: React.FC<IMatchBlock> = ({ item, userId, refetch }) => {
+  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+
+  const formik = useFormik<IBet>({
+    initialValues,
+    // validationSchema: LogInValidationSchema,
+    enableReinitialize: true,
+    validateOnBlur: true,
+    validateOnChange: false,
+    onSubmit: async (values) => {
+      const { coinsAmount } = values;
+      const betData = {
+        coins_amount: coinsAmount,
+        match_id: item.id,
+        bet_target_id: selectedTeamId,
+        bet_target_name: selectedTeam,
+        date_of_bet: dayjs().format(),
+      };
+      if (userId) {
+        await updateDoc(doc(db, 'users', userId), {
+          bets: arrayUnion(betData),
+        });
+      }
+      setSelectedTeam(null);
+      setSelectedTeamId(null);
+      refetch();
+    },
+  });
+
+  const { values, submitForm, setFieldValue } = formik;
+
+  const handleSelectTeam = (teamName: string, teamId: number) => {
     if (selectedTeam !== teamName) {
       setSelectedTeam(teamName);
+      setSelectedTeamId(teamId);
     } else {
       setSelectedTeam(null);
+      setSelectedTeamId(null);
     }
-  };
-
-  const trimString = (str: string) => {
-    if (str.length > 13) {
-      return str.slice(0, 13).concat('...');
-    }
-    return str;
   };
 
   const teamOneLogo = item.opponents[0].opponent.image_url
@@ -51,65 +92,46 @@ const MatchBlock: React.FC<IMatchBlock> = ({ item }) => {
 
   return (
     <View style={styles.wrapper}>
-      {/* {item.isVoted && (
-        <View style={styles.votedBadge}>
-          <Text style={styles.votedBadgeTitle}>Voted</Text>
-        </View>
-      )} */}
+      {item.voted && <VoteStatusBadge isForMatches />}
       <Text style={styles.championshipTitle}>{item.league.name}</Text>
       <View style={styles.teamsButtonsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.teamButton,
-            {
-              justifyContent: 'flex-end',
-              paddingRight: 16,
-              borderColor:
-                selectedTeam === item.opponents[0].opponent.name
-                  ? ACCENT_BLUE_COLOR
-                  : INACTIVE_COLOR,
-            },
-          ]}
-          onPress={() => handleSelectTeam(item.opponents[0].opponent.name)}
-        >
-          <Text style={styles.teamButtonTitle}>
-            {trimString(item.opponents[0].opponent.name)}
-          </Text>
-          <Image
-            source={teamOneLogo}
-            style={{ width: 24, height: 24 }}
-            contentFit="contain"
-          />
-        </TouchableOpacity>
+        <TeamButtonSelect
+          teamName={item.opponents[0].opponent.name}
+          teamIcon={teamOneLogo}
+          isLeftAlign
+          isDisabled={item.voted}
+          isSelected={selectedTeam === item.opponents[0].opponent.name}
+          onClick={() =>
+            handleSelectTeam(
+              item.opponents[0].opponent.name,
+              item.opponents[0].opponent.id,
+            )
+          }
+        />
         <Text style={styles.versusTitle}>VS</Text>
-        <TouchableOpacity
-          style={[
-            styles.teamButton,
-            {
-              paddingLeft: 16,
-              borderColor:
-                selectedTeam === item.opponents[1].opponent.name
-                  ? ACCENT_BLUE_COLOR
-                  : INACTIVE_COLOR,
-            },
-          ]}
-          onPress={() => handleSelectTeam(item.opponents[1].opponent.name)}
-        >
-          <Image
-            source={teamOTwoLogo}
-            style={{ width: 24, height: 24 }}
-            contentFit="contain"
-          />
-          <Text style={styles.teamButtonTitle}>
-            {trimString(item.opponents[1].opponent.name)}
-          </Text>
-        </TouchableOpacity>
+        <TeamButtonSelect
+          teamName={item.opponents[1].opponent.name}
+          teamIcon={teamOTwoLogo}
+          isDisabled={item.voted}
+          isSelected={selectedTeam === item.opponents[1].opponent.name}
+          onClick={() =>
+            handleSelectTeam(
+              item.opponents[1].opponent.name,
+              item.opponents[1].opponent.id,
+            )
+          }
+        />
       </View>
       {selectedTeam && (
         <View style={styles.betContainer}>
           <Text style={styles.teamButtonTitle}>{selectedTeam} Выиграет</Text>
           <View style={styles.betFormContainer}>
-            <TextInput style={styles.betFormInput} inputMode="numeric" />
+            <TextInput
+              style={styles.betFormInput}
+              inputMode="numeric"
+              value={values.coinsAmount}
+              onChangeText={(v) => setFieldValue('coinsAmount', v)}
+            />
             <TouchableOpacity
               style={[
                 styles.betFormButton,
@@ -124,6 +146,7 @@ const MatchBlock: React.FC<IMatchBlock> = ({ item }) => {
                 styles.betFormButton,
                 { backgroundColor: ACCENT_GOLD_COLOR },
               ]}
+              onPress={() => submitForm()}
             >
               <Text
                 style={[styles.betFormButtonTitle, { fontFamily: 'Mont_600' }]}
@@ -164,7 +187,7 @@ const styles = StyleSheet.create({
   championshipTitle: {
     fontFamily: 'Mont_500',
     fontSize: 14,
-    color: '#959595',
+    color: GREY_TEXT_COLOR,
   },
   teamsButtonsContainer: {
     flexDirection: 'row',
@@ -207,7 +230,7 @@ const styles = StyleSheet.create({
   clockTitle: {
     fontFamily: 'Mont_400',
     fontSize: 14,
-    color: '#959595',
+    color: GREY_TEXT_COLOR,
   },
   votedBadge: {
     position: 'absolute',

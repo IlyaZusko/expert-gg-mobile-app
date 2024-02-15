@@ -9,6 +9,7 @@ import {
   HeaderFilterDate,
   EmptyListMatches,
 } from '@/components';
+import { useSession } from '@/context/ctx';
 import { BLACK_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
 import {
   TODAY_DATE_QUERY,
@@ -17,9 +18,10 @@ import {
 } from '@/helpers/constants/DatesQuery';
 import { LIST_OF_GAMES } from '@/helpers/constants/ListOfGames';
 import { IPath } from '@/store/models/Matches';
-import { useTestQuery } from '@/store/service/pandaScoreApi';
+import { useFetchAllMatchesQuery } from '@/store/service/pandaScoreApi';
 
 const Play = () => {
+  const { session } = useSession();
   const [selectedGame, setSelectedGame] = useState<string>('csgo');
   const [selectedFilter, setSelectedFilter] = useState<number>(1);
   const [queryParams, setQueryParams] = useState<IPath>({
@@ -27,7 +29,11 @@ const Play = () => {
     queryParams: TODAY_DATE_QUERY,
   });
 
-  const { data, isFetching } = useTestQuery(queryParams);
+  const { data, isFetching, refetch } = useFetchAllMatchesQuery(queryParams);
+
+  useEffect(() => {
+    refetch();
+  }, [selectedFilter]);
 
   const handleChangeQueryParams = (selectedFilter: number) => {
     switch (selectedFilter) {
@@ -85,7 +91,7 @@ const Play = () => {
           ) : isFetching && index !== 0 ? (
             <View />
           ) : (
-            <MatchBlock item={item} />
+            <MatchBlock item={item} userId={session} refetch={refetch} />
           )
         }
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
