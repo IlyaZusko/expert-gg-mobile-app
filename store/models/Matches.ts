@@ -6,7 +6,17 @@ export interface IMatchesList {
     name: string;
   };
   opponents: IOpponent[];
+  videogame: {
+    id: number;
+    name: string;
+  };
+  winner: IWinner | null;
   voted?: boolean;
+}
+
+interface IWinner {
+  id: number;
+  name: string;
 }
 
 interface IOpponent {

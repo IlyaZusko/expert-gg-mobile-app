@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 import { Image } from 'expo-image';
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import {
@@ -20,6 +21,7 @@ import {
   ACCENT_GOLD_COLOR,
   BLACK_COLOR,
   COVER_COLOR,
+  ERROR_RED_COLOR,
   GREY_TEXT_COLOR,
   INACTIVE_COLOR,
   WHITE_COLOR,
@@ -29,6 +31,7 @@ import { IMatchesList } from '@/store/models/Matches';
 interface IMatchBlock {
   item: IMatchesList;
   userId?: string | null;
+  coins: number | null;
   refetch: () => void;
 }
 
@@ -40,37 +43,52 @@ const initialValues = {
   coinsAmount: '',
 };
 
-const MatchBlock: React.FC<IMatchBlock> = ({ item, userId, refetch }) => {
+const MatchBlock: React.FC<IMatchBlock> = ({
+  item,
+  userId,
+  refetch,
+  coins,
+}) => {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
   const formik = useFormik<IBet>({
     initialValues,
-    // validationSchema: LogInValidationSchema,
     enableReinitialize: true,
     validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async (values) => {
-      const { coinsAmount } = values;
-      const betData = {
-        coins_amount: coinsAmount,
-        match_id: item.id,
-        bet_target_id: selectedTeamId,
-        bet_target_name: selectedTeam,
-        date_of_bet: dayjs().format(),
-      };
-      if (userId) {
-        await updateDoc(doc(db, 'users', userId), {
-          bets: arrayUnion(betData),
-        });
+      try {
+        const coinsAmount = Number(values.coinsAmount);
+        if (coins && coinsAmount <= coins) {
+          const betData = {
+            coins_amount: coinsAmount,
+            match_id: item.id,
+            bet_target_id: selectedTeamId,
+            bet_target_name: selectedTeam,
+            date_of_bet: dayjs().format(),
+            isBetWon: null,
+            user_id: userId,
+          };
+          if (userId) {
+            await updateDoc(doc(db, 'users', userId), {
+              coins: coins - coinsAmount,
+            });
+            await addDoc(collection(db, 'bets'), betData);
+          }
+          setSelectedTeam(null);
+          setSelectedTeamId(null);
+          refetch();
+        } else {
+          setFieldError('coinsAmount', 'Не хватает GG Coins');
+        }
+      } catch (e) {
+        console.log('error', e);
       }
-      setSelectedTeam(null);
-      setSelectedTeamId(null);
-      refetch();
     },
   });
 
-  const { values, submitForm, setFieldValue } = formik;
+  const { values, submitForm, setFieldValue, setFieldError, errors } = formik;
 
   const handleSelectTeam = (teamName: string, teamId: number) => {
     if (selectedTeam !== teamName) {
@@ -126,12 +144,18 @@ const MatchBlock: React.FC<IMatchBlock> = ({ item, userId, refetch }) => {
         <View style={styles.betContainer}>
           <Text style={styles.teamButtonTitle}>{selectedTeam} Выиграет</Text>
           <View style={styles.betFormContainer}>
-            <TextInput
-              style={styles.betFormInput}
-              inputMode="numeric"
-              value={values.coinsAmount}
-              onChangeText={(v) => setFieldValue('coinsAmount', v)}
-            />
+            <View style={{ flex: 2 }}>
+              <TextInput
+                style={styles.betFormInput}
+                inputMode="numeric"
+                value={values.coinsAmount}
+                onChangeText={(v) => setFieldValue('coinsAmount', v)}
+              />
+              {errors.coinsAmount && (
+                <Text style={styles.errorTitle}>{errors.coinsAmount}</Text>
+              )}
+            </View>
+
             <TouchableOpacity
               style={[
                 styles.betFormButton,
@@ -163,7 +187,7 @@ const MatchBlock: React.FC<IMatchBlock> = ({ item, userId, refetch }) => {
           style={{ width: 12, height: 12 }}
         />
         <Text style={styles.clockTitle}>
-          {dayjs(item.begin_at).format('DD.MM.YY HH:mm')}
+          {dayjs(item.begin_at).locale('ru').format('DD MMMM YYYY, HH:mm')}
         </Text>
       </View>
     </View>
@@ -285,5 +309,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Mont_400',
     fontSize: 14,
     color: WHITE_COLOR,
+  },
+  errorTitle: {
+    fontFamily: 'Mont_500',
+    fontSize: 12,
+    color: ERROR_RED_COLOR,
+    paddingTop: 4,
   },
 });

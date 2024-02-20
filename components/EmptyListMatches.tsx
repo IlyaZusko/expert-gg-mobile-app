@@ -4,16 +4,18 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { GREY_TEXT_COLOR } from '@/helpers/constants/Colors';
 
-const EmptyListMatches = () => {
+interface IEmptyListMatches {
+  title: string;
+}
+
+const EmptyListMatches: React.FC<IEmptyListMatches> = ({ title }) => {
   return (
     <View style={styles.wrapper}>
       <Image
         source={require('assets/icons/small-logo-grey.svg')}
         style={{ width: 56, height: 56 }}
       />
-      <Text style={styles.title}>
-        Нет матчей, соответствующих заданным параметрам
-      </Text>
+      <Text style={styles.title}>{title}</Text>
     </View>
   );
 };

@@ -1,55 +1,79 @@
 import { Image } from 'expo-image';
 import { Redirect, Tabs } from 'expo-router';
-import React from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import { useSession } from '@/context/ctx';
+import { db } from '@/firebaseConfig';
 import {
   BLACK_COLOR,
   COVER_COLOR,
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
+import { setBets } from '@/store/service/userSlice';
 
 const TabsLayout = () => {
   const { session, isLoading } = useSession();
+  const [coins, setCoins] = useState<number | null>(null);
+  const dispatch = useDispatch();
 
-  // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <View />;
   }
 
-  // Only require authentication within the (app) group's layout as users
-  // need to be able to access the (auth) group and sign in again.
   if (!session) {
-    // On web, static rendering will stop here as the user is not authenticated
-    // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/login" />;
+    return <Redirect href="/(auth)/" />;
+  }
+
+  if (session) {
+    onSnapshot(doc(db, 'users', session), (doc) => {
+      const data = doc.data();
+      if (data) {
+        setCoins(data.coins);
+        dispatch(setBets(data.bets));
+      }
+    });
   }
   return (
     <Tabs
-      initialRouteName="profile"
-      screenOptions={{
-        tabBarStyle: {
-          height: 84,
-          borderTopWidth: 0,
-          backgroundColor: COVER_COLOR,
-        },
-        headerTitleAlign: 'left',
-        tabBarActiveTintColor: WHITE_COLOR,
-        tabBarInactiveTintColor: INACTIVE_COLOR,
-        headerShown: true,
-        tabBarShowLabel: false,
-        headerTitleStyle: {
-          color: WHITE_COLOR,
-          fontFamily: 'Mont_700',
-          fontSize: 32,
-        },
-        headerStyle: {
-          height: 92,
-          backgroundColor: BLACK_COLOR,
-          shadowOpacity: 0,
-        },
+      initialRouteName="play"
+      screenOptions={({ route, navigation }) => {
+        const state = navigation.getState();
+        const hasNestedNavigation = state.routes[state.index].state?.index > 0;
+        return {
+          tabBarStyle: {
+            height: 84,
+            borderTopWidth: 0,
+            backgroundColor: COVER_COLOR,
+          },
+          headerTitleAlign: 'left',
+          tabBarActiveTintColor: WHITE_COLOR,
+          tabBarInactiveTintColor: INACTIVE_COLOR,
+          headerShown: !hasNestedNavigation,
+          tabBarShowLabel: false,
+          headerTitleStyle: {
+            color: WHITE_COLOR,
+            fontFamily: 'Mont_700',
+            fontSize: 32,
+          },
+          headerStyle: {
+            height: 92,
+            backgroundColor: BLACK_COLOR,
+            shadowOpacity: 0,
+          },
+          headerRight: () => (
+            <View style={styles.coinsContainer}>
+              <Text style={styles.coinsTitle}>{coins}</Text>
+              <Image
+                source={require('assets/icons/coins-gold.svg')}
+                style={{ width: 30, height: 30 }}
+              />
+            </View>
+          ),
+        };
       }}
     >
       <Tabs.Screen
@@ -115,9 +139,9 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="(profile)"
         options={{
-          href: '/profile',
+          href: '(profile)',
           title: 'Профиль',
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.tabBarItemContainer}>
@@ -157,5 +181,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginRight: 16,
     gap: 20,
+  },
+  coinsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingRight: 16,
+  },
+  coinsTitle: {
+    fontFamily: 'Mont_600',
+    color: WHITE_COLOR,
+    fontSize: 20,
   },
 });

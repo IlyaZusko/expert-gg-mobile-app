@@ -1,4 +1,5 @@
 /* eslint-disable indent */
+import { doc, onSnapshot } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
@@ -10,6 +11,7 @@ import {
   EmptyListMatches,
 } from '@/components';
 import { useSession } from '@/context/ctx';
+import { db } from '@/firebaseConfig';
 import { BLACK_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
 import {
   TODAY_DATE_QUERY,
@@ -24,6 +26,8 @@ const Play = () => {
   const { session } = useSession();
   const [selectedGame, setSelectedGame] = useState<string>('csgo');
   const [selectedFilter, setSelectedFilter] = useState<number>(1);
+  const [coins, setCoins] = useState<number | null>(null);
+
   const [queryParams, setQueryParams] = useState<IPath>({
     slug: 'csgo',
     queryParams: TODAY_DATE_QUERY,
@@ -62,6 +66,15 @@ const Play = () => {
     handleChangeQueryParams(selectedFilter);
   }, [selectedFilter, selectedGame]);
 
+  if (session) {
+    onSnapshot(doc(db, 'users', session), (doc) => {
+      const data = doc.data();
+      if (data) {
+        setCoins(data.coins);
+      }
+    });
+  }
+
   return (
     <View style={styles.wrapper}>
       <View>
@@ -91,7 +104,12 @@ const Play = () => {
           ) : isFetching && index !== 0 ? (
             <View />
           ) : (
-            <MatchBlock item={item} userId={session} refetch={refetch} />
+            <MatchBlock
+              item={item}
+              userId={session}
+              refetch={refetch}
+              coins={coins}
+            />
           )
         }
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
@@ -107,7 +125,9 @@ const Play = () => {
         }}
         ListFooterComponent={() => <View style={{ height: 16 }} />}
         ListEmptyComponent={() => {
-          return <EmptyListMatches />;
+          return (
+            <EmptyListMatches title="Нет матчей, соответствующих заданным параметрам" />
+          );
         }}
       />
     </View>

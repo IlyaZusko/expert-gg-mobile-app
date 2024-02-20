@@ -1,6 +1,6 @@
 import { Image, ImageSource } from 'expo-image';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import {
   ACCENT_BLUE_COLOR,

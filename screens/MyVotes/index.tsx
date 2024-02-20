@@ -1,74 +1,72 @@
-import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import React, { useState } from 'react';
+import { FlatList, StyleSheet, View, RefreshControl } from 'react-native';
+import { UIActivityIndicator } from 'react-native-indicators';
 
 import { EmptyListMatches, VoteBlock } from '@/components';
-import { BLACK_COLOR } from '@/helpers/constants/Colors';
-
-const data = [
-  {
-    id: '1',
-    team_1: 'Entropixq',
-    team_2: 'Trasko',
-    game: 'Counter-Strike',
-    championship: 'Malta Vibes 1',
-    date: '17 Jan 14:23 ',
-    bet: '100',
-    isWin: true,
-  },
-  {
-    id: '2',
-    team_1: 'Entropixq',
-    team_2: 'Trasko',
-    game: 'Counter-Strike',
-    championship: 'Malta Vibes 2',
-    date: '17 Jan 14:23 ',
-    bet: '200',
-    isWin: false,
-  },
-  {
-    id: '3',
-    team_1: 'Entropixq',
-    team_2: 'Trasko',
-    game: 'Counter-Strike',
-    championship: 'Malta Vibes 3',
-    date: '17 Jan 14:23 ',
-    bet: '200',
-    isWin: null,
-  },
-];
+import { useSession } from '@/context/ctx';
+import { db } from '@/firebaseConfig';
+import { BLACK_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
+import { useFetchBetsMatchesQuery } from '@/store/service/pandaScoreApi';
 
 const MyVotes = () => {
+  const { session } = useSession();
+  const [queryParams, setQueryParams] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  if (session) {
+    const q = query(collection(db, 'bets'), where('user_id', '==', session));
+    onSnapshot(q, (querySnapshot) => {
+      const matchesId: number[] = [];
+      querySnapshot.forEach((doc) => {
+        matchesId.push(doc.data().match_id);
+      });
+      const queryStr =
+        matchesId.length > 0
+          ? 'filter[id]=' + matchesId.join() + '&per_page=70&page=1'
+          : 'per_page=0&page=0';
+      setQueryParams(queryStr);
+    });
+  }
+
+  const { data, isFetching, isLoading, refetch } =
+    useFetchBetsMatchesQuery(queryParams);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetch();
+    setRefreshing(false);
+  };
   return (
     <View style={styles.wrapper}>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={
-          ({ item, index }) => <VoteBlock item={item} />
-          // isFetching && index === 0 ? (
-          //   <UIActivityIndicator color={WHITE_COLOR} size={30} />
-          // ) : isFetching && index !== 0 ? (
-          //   <View />
-          // ) : (
-          //   <MatchBlock item={item} userId={session} refetch={refetch} />
-          // )
-        }
-        ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
-        // ListHeaderComponent={() => {
-        //   return (
-        //     <HeaderFilterDate
-        //       selectedFilter={selectedFilter}
-        //       setSelectedFilter={setSelectedFilter}
-        //     />
-        //   );
-        // }}
-        ListFooterComponent={() => <View style={{ height: 16 }} />}
-        ListEmptyComponent={() => {
-          return <EmptyListMatches />;
-        }}
-      />
+      {(isLoading || isFetching) && (
+        <UIActivityIndicator color={WHITE_COLOR} size={30} />
+      )}
+      {data && data.length === 0 && !isFetching && !isLoading && (
+        <EmptyListMatches title="Вы еще не совершили ни одной ставки" />
+      )}
+      {data && data.length > 0 && !isFetching && !isLoading && (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item, index }) => <VoteBlock item={item} />}
+          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          // ListHeaderComponent={() => {
+          //   return (
+          //     <HeaderFilterDate
+          //       selectedFilter={selectedFilter}
+          //       setSelectedFilter={setSelectedFilter}
+          //     />
+          //   );
+          // }}
+          ListFooterComponent={() => <View style={{ height: 16 }} />}
+        />
+      )}
     </View>
   );
 };

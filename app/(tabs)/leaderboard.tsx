@@ -1,12 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+
+import { LeaderBoard } from '@/screens';
 
 const LeaderboardScreen = () => {
-  return (
-    <View>
-      <Text>LeaderboardScreen</Text>
-    </View>
-  );
+  return <LeaderBoard />;
 };
 
 export default LeaderboardScreen;

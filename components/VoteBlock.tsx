@@ -1,9 +1,22 @@
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import {
+  collection,
+  doc,
+  getDocs,
+  increment,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import TeamButtonSelect from './TeamButton';
 import VoteStatusBadge from './VoteStatusBadge';
 
+import { useSession } from '@/context/ctx';
+import { db } from '@/firebaseConfig';
 import {
   COVER_COLOR,
   CRICKET_GREEN_COLOR,
@@ -13,10 +26,15 @@ import {
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
+import { IBet } from '@/store/models/Profile';
+import { IVotedMatch } from '@/store/models/VotedMatches';
 
-const VoteBlock = ({ item }) => {
-  const teamIcon = require('assets/icons/small-logo.svg');
+interface IVoteBlock {
+  item: IVotedMatch;
+}
 
+const VoteBlock = ({ item }: IVoteBlock) => {
+  const { session } = useSession();
   const getStatusSymbol = (isWin: boolean | null) => {
     if (isWin === null) {
       return '';
@@ -27,31 +45,67 @@ const VoteBlock = ({ item }) => {
     }
   };
 
+  const teamOneLogo = item.opponents[0].opponent.image_url
+    ? { uri: item.opponents[0].opponent.image_url }
+    : require('assets/icons/small-logo.svg');
+
+  const teamOTwoLogo = item.opponents[1].opponent.image_url
+    ? { uri: item.opponents[1].opponent.image_url }
+    : require('assets/icons/small-logo.svg');
+
+  const isWin =
+    item.winner === null ? null : item.winner.name === item.bet_target_name;
+
+  const updateBetResult = async () => {
+    const bets: IBet[] = [];
+    const q = query(collection(db, 'bets'), where('user_id', '==', session));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((bet) => {
+      bets.push({ ...bet.data(), document_id: bet.id } as IBet);
+    });
+    const targetBet = bets.find((bet) => bet.match_id === item.id);
+    const targetBetDocId = targetBet?.document_id;
+    if (targetBet?.isBetWon === null && targetBetDocId && session) {
+      await updateDoc(doc(db, 'bets', targetBetDocId), {
+        isBetWon: isWin,
+      });
+      await updateDoc(doc(db, 'users', session), {
+        count_wins: increment(1),
+        total_earn: increment(targetBet.coins_amount),
+      });
+    }
+  };
+
+  if (isWin !== null && session) {
+    updateBetResult();
+  }
+
   return (
     <View style={styles.wrapper}>
-      <VoteStatusBadge isWin={item.isWin} />
+      <VoteStatusBadge isWin={isWin} />
       <View style={styles.gameInfoContainer}>
-        <Text style={styles.gameInfoTitle}>{item.game}</Text>
-        <Text style={styles.gameInfoTitle}>{item.championship}</Text>
+        <Text style={styles.gameInfoTitle}>{item.videogame.name}</Text>
+        <Text style={styles.gameInfoTitle}>{item.league.name}</Text>
       </View>
       <View style={styles.teamsButtonsContainer}>
         <TeamButtonSelect
-          teamName={item.team_1}
-          teamIcon={teamIcon}
+          teamName={item.opponents[0].opponent.name}
+          teamIcon={teamOneLogo}
+          isSelected={item.opponents[0].opponent.name === item.bet_target_name}
           isLeftAlign
           isDisabled
         />
         <Text style={styles.versusTitle}>VS</Text>
         <TeamButtonSelect
-          teamName={item.team_2}
-          teamIcon={teamIcon}
+          teamName={item.opponents[1].opponent.name}
+          teamIcon={teamOTwoLogo}
+          isSelected={item.opponents[1].opponent.name === item.bet_target_name}
           isDisabled
         />
       </View>
       <View style={styles.betInfoContainer}>
         <Text style={styles.clockTitle}>
-          {/* {dayjs(item.begin_at).format('DD.MM.YY HH:mm')} */}
-          {item.date}
+          {dayjs(item.date_of_bet).locale('ru').format('DD MMMM YYYY, HH:mm')}
         </Text>
         <View style={styles.bet}>
           <Text
@@ -59,16 +113,16 @@ const VoteBlock = ({ item }) => {
               styles.gameInfoTitle,
               {
                 color:
-                  item.isWin === null
+                  isWin === null
                     ? CRICKET_GREEN_COLOR
-                    : item.isWin
+                    : isWin
                       ? GOLD_COLOR
                       : ERROR_RED_COLOR,
               },
             ]}
           >
-            {getStatusSymbol(item.isWin)}
-            {item.bet} gg
+            {getStatusSymbol(isWin)}
+            {item.coins_amount} gg
           </Text>
         </View>
       </View>

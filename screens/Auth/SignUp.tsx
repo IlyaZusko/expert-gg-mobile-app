@@ -27,8 +27,8 @@ interface SignUpValues {
 }
 
 const initialValues = {
-  username: 'ilyaZusko',
-  email: 'ilyazusko.dev@gmail.com',
+  username: 'testThree',
+  email: 'testThree@gmail.com',
   password: 'Gjgeufq1',
   passwordConfirm: 'Gjgeufq1',
 };
@@ -54,6 +54,10 @@ const SignUp = () => {
       await setDoc(doc(db, 'users', userid), {
         username,
         email,
+        avatar_url: '',
+        coins: 100,
+        count_wins: 0,
+        total_earn: 0,
       });
       signIn(email, passwordConfirm);
     },

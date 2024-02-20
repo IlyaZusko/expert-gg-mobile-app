@@ -12,6 +12,7 @@ import {
   GREY_TEXT_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
+import { router } from 'expo-router';
 
 const Profile = () => {
   const { session, signOut } = useSession();
@@ -33,7 +34,7 @@ const Profile = () => {
   }, []);
 
   const userAvatar =
-    userData && userData?.avatar_url && userData?.avatar_url.length > 0
+    userData && userData.avatar_url && userData.avatar_url.length > 0
       ? { uri: userData.avatar_url }
       : require('assets/images/default-avatar.svg');
 
@@ -56,7 +57,7 @@ const Profile = () => {
           />
           <DefaultButton
             label="Редактировать профиль"
-            onClick={() => {}}
+            onClick={() => router.push('/(tabs)/(profile)/edit-profile')}
             icon={require('assets/icons/edit-pencil-icon.svg')}
           />
           <DefaultButton

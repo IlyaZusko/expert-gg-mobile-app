@@ -1,18 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as SecureStore from 'expo-secure-store';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 import { IMatchesList, IPath } from '../models/Matches';
+import { IBet } from '../models/Profile';
+import { IVotedMatch } from '../models/VotedMatches';
 
 import { db } from '@/firebaseConfig';
 
-interface IBet {
-  match_id: number;
-}
-
 export const pandaScoreApi = createApi({
   reducerPath: 'pandaScoreApi',
-  tagTypes: ['UserTag'],
+  tagTypes: ['Matches', 'VotedMatches'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://api.pandascore.co',
     prepareHeaders: async (headers) => {
@@ -25,10 +23,9 @@ export const pandaScoreApi = createApi({
   endpoints: (build) => ({
     fetchAllMatches: build.query<IMatchesList[], IPath>({
       query: (path) => {
-        const queryParams = path.queryParams;
-        const game = path.slug;
+        const { queryParams, slug } = path;
         return {
-          url: `/${game}/matches?filter[detailed_stats]=true&filter[draw]=false&filter[future]=true&filter[opponents_filled]=true&sort=begin_at&page=1&per_page=70${queryParams}`,
+          url: `/${slug}/matches?filter[detailed_stats]=true&filter[draw]=false&filter[future]=true&filter[opponents_filled]=true&sort=begin_at&page=1&per_page=70${queryParams}`,
           method: 'GET',
         };
       },
@@ -44,23 +41,35 @@ export const pandaScoreApi = createApi({
             }
           });
         }
-        if (userid) {
-          const docRef = doc(db, 'users', userid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const betsIds = data.bets
-              ? data.bets.map((bet: IBet) => bet.match_id)
-              : [];
-            addVotedFlag(response, betsIds);
-            return response;
-          }
-        }
-
+        const betsIds: number[] = [];
+        const q = query(collection(db, 'bets'), where('user_id', '==', userid));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((bet) => betsIds.push(bet.data().match_id));
+        addVotedFlag(response, betsIds);
         return response;
       },
+    }),
+    fetchBetsMatches: build.query<IVotedMatch[] | null, string | null>({
+      query: (params) => ({
+        url: params ? `/matches?${params}&sort=` : '/',
+        method: 'GET',
+      }),
+      transformResponse: async (response: IMatchesList[]) => {
+        const userid = await SecureStore.getItemAsync('session');
+        const bets: IBet[] = [];
+        const q = query(collection(db, 'bets'), where('user_id', '==', userid));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((bet) => bets.push(bet.data() as IBet));
+        const votedMatches = response.map((match) => {
+          const bet = bets.find((bet: IBet) => bet.match_id === match.id);
+          return { ...match, ...bet };
+        });
+        return votedMatches;
+      },
+      providesTags: ['VotedMatches'],
     }),
   }),
 });
 
-export const { useFetchAllMatchesQuery } = pandaScoreApi;
+export const { useFetchAllMatchesQuery, useFetchBetsMatchesQuery } =
+  pandaScoreApi;
