@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
 
-import { LeaderboardItem } from '@/components';
+import { LeaderboardHeader, LeaderboardItem } from '@/components';
+import { useSession } from '@/context/ctx';
 import { db } from '@/firebaseConfig';
 import {
   ACCENT_BLUE_COLOR,
@@ -20,8 +21,11 @@ import {
 import { IProfile } from '@/store/models/Profile';
 
 const LeaderBoard = () => {
+  const { session } = useSession();
   const [activeTab, setActiveTab] = useState(0);
   const [users, setUsers] = useState<IProfile[] | null>(null);
+  const [currentUser, setCurrentUser] = useState<IProfile | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   const isActiveTab = (tab: number) => tab === 0;
 
@@ -32,8 +36,14 @@ const LeaderBoard = () => {
     );
     onSnapshot(q, (querySnapshot) => {
       const profiles: IProfile[] = [];
+      let index = 0;
       querySnapshot.forEach((doc) => {
         profiles.push(doc.data() as IProfile);
+        index += 1;
+        if (doc.id === session) {
+          setCurrentIndex(index);
+          setCurrentUser(doc.data() as IProfile);
+        }
       });
       setUsers(profiles);
     });
@@ -92,7 +102,15 @@ const LeaderBoard = () => {
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16 }}
-        ListHeaderComponent={() => <View style={{ height: 16 }} />}
+        ListHeaderComponent={() =>
+          currentUser && (
+            <LeaderboardHeader
+              player={currentUser}
+              isForWins={isActiveTab(activeTab)}
+              place={currentIndex}
+            />
+          )
+        }
         ListFooterComponent={() => <View style={{ height: 16 }} />}
       />
     </View>

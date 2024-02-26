@@ -1,12 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+
+import { EditProfile } from '@/screens';
 
 const EditProfileScreen = () => {
-  return (
-    <View>
-      <Text>EditProfileScreen</Text>
-    </View>
-  );
+  return <EditProfile />;
 };
 
 export default EditProfileScreen;

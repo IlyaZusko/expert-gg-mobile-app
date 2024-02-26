@@ -13,7 +13,8 @@ import {
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
-import { setBets } from '@/store/service/userSlice';
+import { IProfile } from '@/store/models/Profile';
+import { setUserProfile } from '@/store/service/userSlice';
 
 const TabsLayout = () => {
   const { session, isLoading } = useSession();
@@ -33,7 +34,7 @@ const TabsLayout = () => {
       const data = doc.data();
       if (data) {
         setCoins(data.coins);
-        dispatch(setBets(data.bets));
+        dispatch(setUserProfile(data as IProfile));
       }
     });
   }

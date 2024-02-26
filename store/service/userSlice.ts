@@ -1,23 +1,23 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { IBet } from '../models/Profile';
+import { IBet, IProfile } from '../models/Profile';
 
 interface IInitialState {
-  bets: IBet[];
+  userProfile: IProfile;
 }
 
 const initialState: IInitialState = {
-  bets: [],
+  userProfile: {} as IProfile,
 };
 
 export const userSlice = createSlice({
   name: 'userSlice',
   initialState,
   reducers: {
-    setBets: (state, action: PayloadAction<IBet[]>) => {
-      state.bets = action.payload;
+    setUserProfile: (state, action: PayloadAction<IProfile>) => {
+      state.userProfile = action.payload;
     },
   },
 });
 
-export const { setBets } = userSlice.actions;
+export const { setUserProfile } = userSlice.actions;

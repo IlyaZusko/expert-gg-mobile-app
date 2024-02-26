@@ -1,41 +1,25 @@
 import { Image } from 'expo-image';
-import { DocumentData, doc, getDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import { router } from 'expo-router';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { DefaultButton } from '@/components';
 import { useSession } from '@/context/ctx';
-import { db } from '@/firebaseConfig';
 import {
   ACCENT_BLUE_COLOR,
   BLACK_COLOR,
   GREY_TEXT_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
-import { router } from 'expo-router';
+import { useAppSelector } from '@/helpers/hooks';
 
 const Profile = () => {
-  const { session, signOut } = useSession();
-  const [userData, setUserData] = useState<DocumentData | null>(null);
-
-  const handleGetUser = async (userId: string) => {
-    const docRef = doc(db, 'users', userId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      setUserData(data);
-    }
-  };
-
-  useEffect(() => {
-    if (session) {
-      handleGetUser(session);
-    }
-  }, []);
+  const { signOut } = useSession();
+  const { userProfile } = useAppSelector((state) => state.userSlice);
 
   const userAvatar =
-    userData && userData.avatar_url && userData.avatar_url.length > 0
-      ? { uri: userData.avatar_url }
+    userProfile && userProfile.avatar_url && userProfile.avatar_url.length > 0
+      ? { uri: userProfile.avatar_url }
       : require('assets/images/default-avatar.svg');
 
   return (
@@ -46,8 +30,8 @@ const Profile = () => {
           style={{ width: 64, height: 64, borderRadius: 10000 }}
           contentFit="contain"
         />
-        <Text style={styles.usernameTitle}>{userData?.username}</Text>
-        <Text style={styles.emailTitle}>{userData?.email}</Text>
+        <Text style={styles.usernameTitle}>{userProfile?.username}</Text>
+        <Text style={styles.emailTitle}>{userProfile?.email}</Text>
         <View style={styles.buttonsContainer}>
           <DefaultButton
             label="Получить GG coins"
