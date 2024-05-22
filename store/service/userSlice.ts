@@ -1,13 +1,15 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { IBet, IProfile } from '../models/Profile';
+import { IProfile } from '../models/Profile';
 
 interface IInitialState {
   userProfile: IProfile;
+  isShowPopup: boolean;
 }
 
 const initialState: IInitialState = {
   userProfile: {} as IProfile,
+  isShowPopup: false,
 };
 
 export const userSlice = createSlice({
@@ -17,7 +19,10 @@ export const userSlice = createSlice({
     setUserProfile: (state, action: PayloadAction<IProfile>) => {
       state.userProfile = action.payload;
     },
+    setShowPopup: (state, action: PayloadAction<boolean>) => {
+      state.isShowPopup = action.payload;
+    },
   },
 });
 
-export const { setUserProfile } = userSlice.actions;
+export const { setUserProfile, setShowPopup } = userSlice.actions;

@@ -10,6 +10,7 @@ import {
   where,
 } from 'firebase/firestore';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import TeamButtonSelect from './TeamButton';
@@ -34,6 +35,7 @@ interface IVoteBlock {
 }
 
 const VoteBlock = ({ item }: IVoteBlock) => {
+  const { i18n } = useTranslation('translation');
   const { session } = useSession();
   const getStatusSymbol = (isWin: boolean | null) => {
     if (isWin === null) {
@@ -105,7 +107,9 @@ const VoteBlock = ({ item }: IVoteBlock) => {
       </View>
       <View style={styles.betInfoContainer}>
         <Text style={styles.clockTitle}>
-          {dayjs(item.date_of_bet).locale('ru').format('DD MMMM YYYY, HH:mm')}
+          {dayjs(item.date_of_bet)
+            .locale(i18n.language)
+            .format('DD MMMM YYYY, HH:mm')}
         </Text>
         <View style={styles.bet}>
           <Text

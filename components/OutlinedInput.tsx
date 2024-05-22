@@ -1,4 +1,5 @@
 import React, { InputHTMLAttributes, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   InputModeOptions,
   StyleSheet,
@@ -33,6 +34,9 @@ const OutlinedInput: React.FC<IOutlinedInput> = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'errors',
+  });
 
   return (
     <View style={styles.wrapper}>
@@ -54,7 +58,7 @@ const OutlinedInput: React.FC<IOutlinedInput> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
-      {error && <Text style={styles.errorTitle}>{error}</Text>}
+      {error && <Text style={styles.errorTitle}>{t(error)}</Text>}
     </View>
   );
 };

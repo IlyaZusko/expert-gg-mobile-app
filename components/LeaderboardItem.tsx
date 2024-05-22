@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { COVER_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
@@ -16,6 +17,9 @@ const LeaderboardItem: React.FC<ILeaderboardItem> = ({
   place,
   isForWins,
 }) => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'leaderboard.leaderboardItem',
+  });
   const userAvatar =
     item.avatar_url.length !== 0
       ? { uri: item.avatar_url }
@@ -26,14 +30,14 @@ const LeaderboardItem: React.FC<ILeaderboardItem> = ({
     const remainder100 = count % 100;
 
     if (remainder10 === 1 && remainder100 !== 11) {
-      return count + ' победа';
+      return `${count} ${t('single')}`;
     } else if (
       [2, 3, 4].includes(remainder10) &&
       ![12, 13, 14].includes(remainder100)
     ) {
-      return count + ' победы';
+      return `${count} ${t('multi')}`;
     } else {
-      return count + ' побед';
+      return `${count} ${t('extra')}`;
     }
   };
 

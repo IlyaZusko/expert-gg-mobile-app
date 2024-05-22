@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   StyleSheet,
@@ -21,6 +22,9 @@ import {
 import { IProfile } from '@/store/models/Profile';
 
 const LeaderBoard = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'leaderboard',
+  });
   const { session } = useSession();
   const [activeTab, setActiveTab] = useState(0);
   const [users, setUsers] = useState<IProfile[] | null>(null);
@@ -68,7 +72,7 @@ const LeaderBoard = () => {
               : {},
           ]}
         >
-          <Text style={styles.tabButtonTilte}>Победы</Text>
+          <Text style={styles.tabButtonTilte}>{t('tabWins')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setActiveTab(1)}
@@ -82,7 +86,7 @@ const LeaderBoard = () => {
               : {},
           ]}
         >
-          <Text style={styles.tabButtonTilte}>Общий выигрыш</Text>
+          <Text style={styles.tabButtonTilte}>{t('tabGain')}</Text>
         </TouchableOpacity>
       </View>
       <FlatList

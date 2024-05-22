@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { ACCENT_BLUE_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
@@ -12,6 +13,9 @@ const HeaderFilterDate: React.FC<IHeaderFilterDate> = ({
   selectedFilter,
   setSelectedFilter,
 }) => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'play',
+  });
   return (
     <View style={styles.headerWrapper}>
       <TouchableOpacity
@@ -25,7 +29,7 @@ const HeaderFilterDate: React.FC<IHeaderFilterDate> = ({
         ]}
         onPress={() => setSelectedFilter(1)}
       >
-        <Text style={styles.filterButtonTitle}>Сегодня</Text>
+        <Text style={styles.filterButtonTitle}>{t('today')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -39,7 +43,7 @@ const HeaderFilterDate: React.FC<IHeaderFilterDate> = ({
         ]}
         onPress={() => setSelectedFilter(2)}
       >
-        <Text style={styles.filterButtonTitle}>Завтра</Text>
+        <Text style={styles.filterButtonTitle}>{t('tommorow')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -52,7 +56,7 @@ const HeaderFilterDate: React.FC<IHeaderFilterDate> = ({
         ]}
         onPress={() => setSelectedFilter(3)}
       >
-        <Text style={styles.filterButtonTitle}>Неделя</Text>
+        <Text style={styles.filterButtonTitle}>{t('weak')}</Text>
       </TouchableOpacity>
     </View>
   );

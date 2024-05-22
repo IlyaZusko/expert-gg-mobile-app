@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { DefaultButton } from '@/components';
@@ -14,6 +15,9 @@ import {
 import { useAppSelector } from '@/helpers/hooks';
 
 const Profile = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'profile',
+  });
   const { signOut } = useSession();
   const { userProfile } = useAppSelector((state) => state.userSlice);
 
@@ -27,32 +31,32 @@ const Profile = () => {
       <View style={styles.contentContainer}>
         <Image
           source={userAvatar}
-          style={{ width: 64, height: 64, borderRadius: 10000 }}
+          style={{ width: 100, height: 100, borderRadius: 10000 }}
           contentFit="contain"
         />
         <Text style={styles.usernameTitle}>{userProfile?.username}</Text>
         <Text style={styles.emailTitle}>{userProfile?.email}</Text>
         <View style={styles.buttonsContainer}>
           <DefaultButton
-            label="Получить GG coins"
-            onClick={() => {}}
+            label={t('getCoinsButton')}
+            onClick={() => router.push('/(tabs)/(profile)/reward')}
             isPrimary
             icon={require('assets/icons/gg-coins.svg')}
           />
           <DefaultButton
-            label="Редактировать профиль"
+            label={t('editProfileButton')}
             onClick={() => router.push('/(tabs)/(profile)/edit-profile')}
             icon={require('assets/icons/edit-pencil-icon.svg')}
           />
           <DefaultButton
-            label="Настройки"
-            onClick={() => {}}
+            label={t('settingsButton')}
+            onClick={() => router.push('/(tabs)/(profile)/settings')}
             icon={require('assets/icons/settings-icon.svg')}
           />
         </View>
       </View>
       <TouchableOpacity style={styles.outlineButton} onPress={() => signOut()}>
-        <Text style={styles.outlineButtonTitle}>Выйти</Text>
+        <Text style={styles.outlineButtonTitle}>{t('logOutButton')}</Text>
       </TouchableOpacity>
     </View>
   );

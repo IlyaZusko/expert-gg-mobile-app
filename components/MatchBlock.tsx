@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   StyleSheet,
   Text,
@@ -49,6 +50,12 @@ const MatchBlock: React.FC<IMatchBlock> = ({
   refetch,
   coins,
 }) => {
+  const { t, i18n } = useTranslation('translation', {
+    keyPrefix: 'play',
+  });
+  const { t: tError } = useTranslation('translation', {
+    keyPrefix: 'errors',
+  });
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
@@ -80,7 +87,7 @@ const MatchBlock: React.FC<IMatchBlock> = ({
           setSelectedTeamId(null);
           refetch();
         } else {
-          setFieldError('coinsAmount', 'Не хватает GG Coins');
+          setFieldError('coinsAmount', tError('makeBet'));
         }
       } catch (e) {
         console.log('error', e);
@@ -142,7 +149,9 @@ const MatchBlock: React.FC<IMatchBlock> = ({
       </View>
       {selectedTeam && (
         <View style={styles.betContainer}>
-          <Text style={styles.teamButtonTitle}>{selectedTeam} Выиграет</Text>
+          <Text style={styles.teamButtonTitle}>
+            {selectedTeam} {t('win')}
+          </Text>
           <View style={styles.betFormContainer}>
             <View style={{ flex: 2 }}>
               <TextInput
@@ -163,7 +172,7 @@ const MatchBlock: React.FC<IMatchBlock> = ({
               ]}
               onPress={() => setSelectedTeam(null)}
             >
-              <Text style={styles.betFormButtonTitle}>Отмена</Text>
+              <Text style={styles.betFormButtonTitle}>{t('cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -175,7 +184,7 @@ const MatchBlock: React.FC<IMatchBlock> = ({
               <Text
                 style={[styles.betFormButtonTitle, { fontFamily: 'Mont_600' }]}
               >
-                Ставка
+                {t('bet')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -187,7 +196,9 @@ const MatchBlock: React.FC<IMatchBlock> = ({
           style={{ width: 12, height: 12 }}
         />
         <Text style={styles.clockTitle}>
-          {dayjs(item.begin_at).locale('ru').format('DD MMMM YYYY, HH:mm')}
+          {dayjs(item.begin_at)
+            .locale(i18n.language)
+            .format('DD MMMM YYYY, HH:mm')}
         </Text>
       </View>
     </View>

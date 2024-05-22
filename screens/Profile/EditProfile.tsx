@@ -5,6 +5,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
@@ -26,6 +27,12 @@ interface EditProfileValues {
 }
 
 const EditProfile = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'profile.editProfile',
+  });
+  const { t: tInput } = useTranslation('translation', {
+    keyPrefix: 'input',
+  });
   const { session } = useSession();
   const dispatch = useDispatch();
   const { userProfile } = useAppSelector((state) => state.userSlice);
@@ -123,25 +130,29 @@ const EditProfile = () => {
             style={styles.avatarButton}
             onPress={() => handleUploadProfilePicture()}
           >
-            <Text style={styles.avatarButtonTitle}>Обновить фото профиля</Text>
+            <Text style={styles.avatarButtonTitle}>
+              {t('updateProfilePictire')}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.avatarButton}
             onPress={() => handleDeleteProfilePicture()}
           >
-            <Text style={styles.avatarButtonTitle}>Удалить фото профиля</Text>
+            <Text style={styles.avatarButtonTitle}>
+              {t('deleteProfilePicture')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.formContainer}>
         <OutlinedInput
           inputType="text"
-          placeholder="Имя пользователя"
+          placeholder={tInput('usernamePlaceholder')}
           value={values.username}
           onChange={(v) => setFieldValue('username', v)}
           error={errors.username}
         />
-        <DefaultButton label="Сохранить" onClick={() => submitForm()} />
+        <DefaultButton label={t('save')} onClick={() => submitForm()} />
       </View>
     </View>
   );

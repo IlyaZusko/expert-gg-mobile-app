@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { DefaultButton } from '@/components';
@@ -13,6 +14,12 @@ import {
 } from '@/helpers/constants/Colors';
 
 const Welcome = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'auth',
+  });
+  const { t: tButtons } = useTranslation('translation', {
+    keyPrefix: 'buttons',
+  });
   return (
     <View style={styles.wrapper}>
       <LinearGradient
@@ -26,21 +33,19 @@ const Welcome = () => {
           style={{ width: 140, height: 61 }}
         />
         <View style={{ paddingBottom: 40 }}>
-          <Text style={styles.mainTitle}>
-            Стань частью киберспорта уже сейчас!
-          </Text>
-          <Text style={styles.mainTitle}>Вместе с EXPERT GG</Text>
+          <Text style={styles.mainTitle}>{t('welcomeTitleOne')}</Text>
+          <Text style={styles.mainTitle}>{t('welcomeTitleTwo')}</Text>
         </View>
         <View style={styles.buttonsContainer}>
           <DefaultButton
-            label="Войти"
+            label={tButtons('signIn')}
             onClick={() => router.push('/(auth)/login')}
           />
           <TouchableOpacity
             style={styles.outlineButton}
             onPress={() => router.push('/(auth)/sign-up')}
           >
-            <Text style={styles.outlineButtonTitle}>Зарегистрироваться</Text>
+            <Text style={styles.outlineButtonTitle}>{tButtons('signUp')}</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>

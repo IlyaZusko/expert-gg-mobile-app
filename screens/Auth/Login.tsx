@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useFormik } from 'formik';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { LogInValidationSchema } from './utils';
@@ -29,6 +30,15 @@ const initialValues = {
 };
 
 const Login = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'auth.login',
+  });
+  const { t: tButtons } = useTranslation('translation', {
+    keyPrefix: 'buttons',
+  });
+  const { t: tInput } = useTranslation('translation', {
+    keyPrefix: 'input',
+  });
   const { signIn } = useSession();
 
   const formik = useFormik<LogInValues>({
@@ -60,33 +70,40 @@ const Login = () => {
         <View style={styles.contentContainer}>
           <View style={styles.formContainer}>
             <OutlinedInput
-              placeholder="Электронная почта..."
+              placeholder={tInput('emailPlaceholder')}
               inputType="email"
               value={values.email}
               onChange={(v) => setFieldValue('email', v)}
               error={errors.email}
             />
             <OutlinedInput
-              placeholder="Пароль..."
+              placeholder={tInput('passwordPlaceholder')}
               inputType="text"
               isSecureText
               value={values.password}
               onChange={(v) => setFieldValue('password', v)}
               error={errors.password}
             />
-            <DefaultButton label="Войти" onClick={() => submitForm()} />
+            <DefaultButton
+              label={tButtons('signIn')}
+              onClick={() => submitForm()}
+            />
           </View>
-          <Text style={styles.socialSignInTip}>
-            Или войдите с помощью социальных сетей
-          </Text>
+          {/* <Text style={styles.socialSignInTip}>{t('socialTip')}</Text>
           <View style={styles.socialButtonsContainer}>
             <SocialLoginButton label="Google" />
             <SocialLoginButton label="Facebook" />
             <SocialLoginButton label="Apple" />
             <SocialLoginButton label="Twitter" />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={styles.termsTitle}>Еще нет аккаунта? </Text>
+          </View> */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingTop: 140,
+            }}
+          >
+            <Text style={styles.termsTitle}>{t('noAccount')} </Text>
             <TouchableOpacity>
               <Text
                 style={[
@@ -95,7 +112,7 @@ const Login = () => {
                 ]}
                 onPress={() => router.push('/sign-up')}
               >
-                Зарегистрироваться
+                {tButtons('signUp')}
               </Text>
             </TouchableOpacity>
           </View>

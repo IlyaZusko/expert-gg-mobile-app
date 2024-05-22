@@ -1,0 +1,97 @@
+{
+  "profile": {
+    "getCoinsButton": "Получить GG coins",
+    "editProfileButton": "Редактировать профиль",
+    "settingsButton": "Настройки",
+    "logOutButton": "Выйти",
+    "editProfile": {
+      "updateProfilePictire": "Обновить фото профиля",
+      "deleteProfilePicture": "Удалить фото профиля",
+      "save": "Сохранить"
+    },
+    "settings": {
+      "changeLanguage": "Язык",
+      "changePassword": "Сменить пароль",
+      "ru": "Русский",
+      "en": "Английский",
+      "changeTip": "Выберите язык, который хотели бы видеть в качестве основного языка приложения"
+    },
+    "reward": {
+      "mainTitleActive": "Недостаточно монет? Получи GG coins за просмотр рекламы!",
+      "mainTitleInactive": "Кажется у нас кончились монеты. Возращайся через",
+      "getCoinsButton": "Получить GG coins",
+      "hours": "Часы",
+      "minutes": "Минуты",
+      "seconds": "Секунды"
+    }
+  },
+  "leaderboard": {
+    "tabWins": "Победы",
+    "tabGain": "Общий выигрыш",
+    "place": "Место",
+    "wins": "Победы",
+    "gain": "Общий выигрыш",
+    "me": "Я",
+    "leaderboardItem": {
+      "single": "победа",
+      "multi": "победы",
+      "extra": "побед"
+    }
+  },
+  "myVotes": {
+    "emptyTitle": "Вы еще не совершили ни одной ставки"
+  },
+  "play": {
+    "today": "Сегодня",
+    "tommorow": "Завтра",
+    "weak": "Неделя",
+    "win": "Выиграет",
+    "cancel": "Отмена",
+    "bet": "Ставка",
+    "emptyList": "Нет матчей, соответствующих заданным параметрам"
+  },
+  "input": {
+    "usernamePlaceholder": "Имя пользователя...",
+    "emailPlaceholder": "Электронная почта...",
+    "passwordPlaceholder": "Пароль...",
+    "passwordRepeatPlaceholder": "Пароль еще раз..."
+  },
+  "errors": {
+    "makeBet": "Не хватает GG Coins",
+    "required": "Обязательное поле",
+    "max": "Должно быть короче 75 символов",
+    "email": "Некорректный адрес электронной почты",
+    "maxPassword": "Длина пароля не может быть больше 20 символов",
+    "minPassword": "Длина пароля не может быть меньше 8 символов",
+    "incorrectPassword": "Пароль должен содержать как минимум 1 заглавную букву, 1 прописную букву и 1 цифру",
+    "minUsername": "Длина имени пользователя не может быть меньше 4 символов",
+    "passwordMatch": "Пароли должны совпадать"
+  },
+  "buttons": {
+    "signUp": "Зарегистрироваться",
+    "signIn": "Войти",
+    "confirm": "Подтвердить" 
+  },
+  "auth": {
+    "welcomeTitleOne": "Стань частью киберспорта уже сейчас!",
+    "welcomeTitleTwo": "Вместе с EXPERT GG",
+    "login": {
+      "socialTip": "Или войдите с помощью социальных сетей",
+      "noAccount": "Еще нет аккаунта?"
+    },
+    "signUp": {
+      "isAccount": "Уже есть аккаунт?"
+    }
+  },
+  "navigation": {
+    "play": "Игра",
+    "myVotes": "Мои Ставки",
+    "leaderboard": "Лидерборд",
+    "profile": "Профиль",
+    "editAccount": "Редактировать профиль",
+    "getCoins": "Получить GG Coins",
+    "settings": "Настройки",
+    "language": "Язык",
+    "passwordChange": "Смена пароля"
+  }
+}

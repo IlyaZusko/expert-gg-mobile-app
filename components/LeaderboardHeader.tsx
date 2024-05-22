@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -20,6 +21,9 @@ const LeaderboardHeader: React.FC<ILeaderboardHeader> = ({
   isForWins,
   place,
 }) => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'leaderboard',
+  });
   const userAvatar =
     player.avatar_url && player.avatar_url.length > 0
       ? { uri: player.avatar_url }
@@ -27,7 +31,7 @@ const LeaderboardHeader: React.FC<ILeaderboardHeader> = ({
   return (
     <View style={styles.wrapper}>
       <View style={styles.infoContainer}>
-        <Text style={styles.mainTitle}>МЕСТО</Text>
+        <Text style={styles.mainTitle}>{t('place').toUpperCase()}</Text>
         <Text style={styles.subTitle}>{place}</Text>
       </View>
       <View style={styles.infoContainer}>
@@ -36,11 +40,13 @@ const LeaderboardHeader: React.FC<ILeaderboardHeader> = ({
           style={{ width: 61, height: 61, borderRadius: 10000 }}
           contentFit="contain"
         />
-        <Text style={styles.nameTitle}>Я ({player.username})</Text>
+        <Text style={styles.nameTitle}>
+          {t('me')} ({player.username})
+        </Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.mainTitle}>
-          {isForWins ? 'ПОБЕДЫ' : 'ОБЩИЙ ВЫИГРЫШ'}
+          {t(isForWins ? 'wins' : 'gain').toUpperCase()}
         </Text>
         <Text style={styles.subTitle}>
           {isForWins ? player.count_wins : player.total_earn}
@@ -90,5 +96,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Mont_700',
     fontSize: 16,
     color: WHITE_COLOR,
+    textAlign: 'center',
   },
 });

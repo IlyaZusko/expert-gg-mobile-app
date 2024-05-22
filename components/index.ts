@@ -6,6 +6,7 @@ export { default as DefaultButton } from './DefaultButton';
 export { default as SocialLoginButton } from './SocialLoginButton';
 export { default as GameSelectorButton } from './GameSelectorButton';
 export { default as TeamButtonSelect } from './TeamButton';
+export { default as SettingsButton } from './SettingsButton';
 
 // BADGES
 export { default as VoteStatusBadge } from './VoteStatusBadge';

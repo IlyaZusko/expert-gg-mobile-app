@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { Redirect, Tabs } from 'expo-router';
 import { doc, onSnapshot } from 'firebase/firestore';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 
@@ -17,6 +18,9 @@ import { IProfile } from '@/store/models/Profile';
 import { setUserProfile } from '@/store/service/userSlice';
 
 const TabsLayout = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'navigation',
+  });
   const { session, isLoading } = useSession();
   const [coins, setCoins] = useState<number | null>(null);
   const dispatch = useDispatch();
@@ -81,7 +85,7 @@ const TabsLayout = () => {
         name="play"
         options={{
           href: '/play',
-          title: 'Игра',
+          title: t('play'),
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.tabBarItemContainer}>
               <Image
@@ -92,7 +96,9 @@ const TabsLayout = () => {
                     : require('assets/icons/tab-swords-inactive.svg')
                 }
               />
-              <Text style={[styles.tabBarItemTitle, { color }]}>Игра</Text>
+              <Text style={[styles.tabBarItemTitle, { color }]}>
+                {t('play')}
+              </Text>
             </View>
           ),
         }}
@@ -101,7 +107,7 @@ const TabsLayout = () => {
         name="my-votes"
         options={{
           href: '/my-votes',
-          title: 'Мои Ставки',
+          title: t('myVotes'),
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.tabBarItemContainer}>
               <Image
@@ -113,7 +119,7 @@ const TabsLayout = () => {
                 }
               />
               <Text style={[styles.tabBarItemTitle, { color }]}>
-                Мои Ставки
+                {t('myVotes')}
               </Text>
             </View>
           ),
@@ -123,7 +129,7 @@ const TabsLayout = () => {
         name="leaderboard"
         options={{
           href: '/leaderboard',
-          title: 'Лидерборд',
+          title: t('leaderboard'),
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.tabBarItemContainer}>
               <Image
@@ -134,7 +140,9 @@ const TabsLayout = () => {
                     : require('assets/icons/tab-trophy-inactive.svg')
                 }
               />
-              <Text style={[styles.tabBarItemTitle, { color }]}>Лидерборд</Text>
+              <Text style={[styles.tabBarItemTitle, { color }]}>
+                {t('leaderboard')}
+              </Text>
             </View>
           ),
         }}
@@ -143,7 +151,7 @@ const TabsLayout = () => {
         name="(profile)"
         options={{
           href: '(profile)',
-          title: 'Профиль',
+          title: t('profile'),
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.tabBarItemContainer}>
               <Image
@@ -154,7 +162,9 @@ const TabsLayout = () => {
                     : require('assets/icons/tab-user-inactive.svg')
                 }
               />
-              <Text style={[styles.tabBarItemTitle, { color }]}>Профиль</Text>
+              <Text style={[styles.tabBarItemTitle, { color }]}>
+                {t('profile')}
+              </Text>
             </View>
           ),
         }}

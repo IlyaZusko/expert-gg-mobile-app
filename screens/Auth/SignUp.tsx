@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { SignUpValidationSchema } from './utils';
@@ -27,13 +28,26 @@ interface SignUpValues {
 }
 
 const initialValues = {
-  username: 'testThree',
-  email: 'testThree@gmail.com',
+  username: 'IlyaZusko',
+  email: 'ilyazusko.dev@gmail.com',
   password: 'Gjgeufq1',
   passwordConfirm: 'Gjgeufq1',
+  // username: '',
+  // email: '',
+  // password: '',
+  // passwordConfirm: '',
 };
 
 const SignUp = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'auth.signUp',
+  });
+  const { t: tButtons } = useTranslation('translation', {
+    keyPrefix: 'buttons',
+  });
+  const { t: tInput } = useTranslation('translation', {
+    keyPrefix: 'input',
+  });
   const { signIn } = useSession();
 
   const formik = useFormik<SignUpValues>({
@@ -54,6 +68,7 @@ const SignUp = () => {
       await setDoc(doc(db, 'users', userid), {
         username,
         email,
+        ad_view_date: '',
         avatar_url: '',
         coins: 100,
         count_wins: 0,
@@ -80,21 +95,21 @@ const SignUp = () => {
         <View style={styles.contentContainer}>
           <View style={styles.formContainer}>
             <OutlinedInput
-              placeholder="Никнейм..."
+              placeholder={tInput('usernamePlaceholder')}
               inputType="text"
               value={values.username}
               onChange={(v) => setFieldValue('username', v)}
               error={errors.username}
             />
             <OutlinedInput
-              placeholder="Электронная почта..."
+              placeholder={tInput('emailPlaceholder')}
               inputType="email"
               value={values.email}
               onChange={(v) => setFieldValue('email', v)}
               error={errors.email}
             />
             <OutlinedInput
-              placeholder="Пароль..."
+              placeholder={tInput('passwordPlaceholder')}
               inputType="text"
               isSecureText
               value={values.password}
@@ -102,7 +117,7 @@ const SignUp = () => {
               error={errors.password}
             />
             <OutlinedInput
-              placeholder="Пароль еще раз..."
+              placeholder={tInput('passwordRepeatPlaceholder')}
               inputType="text"
               isSecureText
               value={values.passwordConfirm}
@@ -110,7 +125,7 @@ const SignUp = () => {
               error={errors.passwordConfirm}
             />
             <DefaultButton
-              label="Зарегистрироваться"
+              label={tButtons('signUp')}
               onClick={() => submitForm()}
             />
           </View>
@@ -121,7 +136,7 @@ const SignUp = () => {
               paddingTop: 100,
             }}
           >
-            <Text style={styles.termsTitle}>Уже есть аккаунт? </Text>
+            <Text style={styles.termsTitle}>{t('isAccount')} </Text>
             <TouchableOpacity>
               <Text
                 style={[
@@ -130,7 +145,7 @@ const SignUp = () => {
                 ]}
                 onPress={() => router.push('/login')}
               >
-                Войти
+                {tButtons('signIn')}
               </Text>
             </TouchableOpacity>
           </View>

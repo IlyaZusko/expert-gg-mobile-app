@@ -1,0 +1,97 @@
+{
+  "profile": {
+    "getCoinsButton": "Get GG coins",
+    "editProfileButton": "Edit profile",
+    "settingsButton": "Settings",
+    "logOutButton": "Log out",
+    "editProfile": {
+      "updateProfilePictire": "Update profile picture",
+      "deleteProfilePicture": "Delete profile picture",
+      "save": "Save"
+    },
+    "settings": {
+      "changeLanguage": "Language",
+      "changePassword": "Change Password",
+      "ru": "Russian",
+      "en": "English",
+      "changeTip": "Select the language you would like to see as the main language of the application"
+    },
+    "reward": {
+      "mainTitleActive": "Not enough coins? Get GG coins for watching ads!",
+      "mainTitleInactive": "Looks like we're out of coins. Come back in",
+      "getCoinsButton": "Get GG coins",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    }
+  },
+  "leaderboard": {
+    "tabWins": "Wins",
+    "tabGain": "Total gain",
+    "place": "Place",
+    "wins": "Wins",
+    "gain": "Total gain",
+    "me": "Me",
+    "leaderboardItem": {
+      "single": "victory",
+      "multi": "victories",
+      "extra": "victories"
+    }
+  },
+  "myVotes": {
+    "emptyTitle": "You haven't placed any bets yet"
+  },
+  "play": {
+    "today": "Today",
+    "tommorow": "Tomorrow",
+    "weak": "This Weak",
+    "win": "Wins",
+    "cancel": "Cancel",
+    "bet": "Bet",
+    "emptyList": "No matches matching the specified parameters"
+  },
+  "input": {
+    "usernamePlaceholder": "Username...",
+    "emailPlaceholder": "Email Address...",
+    "passwordPlaceholder": "Password...",
+    "passwordRepeatPlaceholder": "Repeat Password..."
+  },
+  "errors": {
+    "makeBet": "Not enough GG Coins",
+    "required": "Required field",
+    "max": "Must be less than 75 characters",
+    "email": "Invalid email address",
+    "maxPassword": "Password length cannot be more than 20 characters",
+    "minPassword": "Password length cannot be less than 8 characters",
+    "incorrectPassword": "Password must contain at least 1 capital letter, 1 uppercase letter and 1 number",
+    "minUsername": "The length of the username cannot be less than 4 characters",
+    "passwordMatch": "The passwords must match"
+  },
+  "buttons": {
+    "signUp": "Sign Up",
+    "signIn": "Log in",
+    "confirm": "Confirm" 
+  },
+  "auth": {
+    "welcomeTitleOne": "Become a part of cybersports now!",
+    "welcomeTitleTwo": "Together with EXPERT GG",
+    "login": {
+      "socialTip": "Or log in using social media",
+      "noAccount": "No account yet?"
+    },
+    "signUp": {
+      "isAccount": "Already have an account?"
+    }
+  },
+  "navigation": {
+    "play": "Play",
+    "myVotes": "My Votes",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile",
+    "editAccount": "Edit profile",
+    "getCoins": "Get GG Coins",
+    "settings": "Settings",
+    "language": "Language",
+    "passwordChange": "Change Password"
+  }
+}

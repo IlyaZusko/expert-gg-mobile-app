@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 import { doc, onSnapshot } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
 
@@ -23,6 +24,9 @@ import { IPath } from '@/store/models/Matches';
 import { useFetchAllMatchesQuery } from '@/store/service/pandaScoreApi';
 
 const Play = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'play',
+  });
   const { session } = useSession();
   const [selectedGame, setSelectedGame] = useState<string>('csgo');
   const [selectedFilter, setSelectedFilter] = useState<number>(1);
@@ -125,9 +129,7 @@ const Play = () => {
         }}
         ListFooterComponent={() => <View style={{ height: 16 }} />}
         ListEmptyComponent={() => {
-          return (
-            <EmptyListMatches title="Нет матчей, соответствующих заданным параметрам" />
-          );
+          return <EmptyListMatches title={t('emptyList')} />;
         }}
       />
     </View>

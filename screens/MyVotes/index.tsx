@@ -1,5 +1,6 @@
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
 
@@ -10,6 +11,9 @@ import { BLACK_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
 import { useFetchBetsMatchesQuery } from '@/store/service/pandaScoreApi';
 
 const MyVotes = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'myVotes',
+  });
   const { session } = useSession();
   const [queryParams, setQueryParams] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -43,7 +47,7 @@ const MyVotes = () => {
         <UIActivityIndicator color={WHITE_COLOR} size={30} />
       )}
       {data && data.length === 0 && !isFetching && !isLoading && (
-        <EmptyListMatches title="Вы еще не совершили ни одной ставки" />
+        <EmptyListMatches title={t('emptyTitle')} />
       )}
       {data && data.length > 0 && !isFetching && !isLoading && (
         <FlatList
@@ -56,14 +60,6 @@ const MyVotes = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          // ListHeaderComponent={() => {
-          //   return (
-          //     <HeaderFilterDate
-          //       selectedFilter={selectedFilter}
-          //       setSelectedFilter={setSelectedFilter}
-          //     />
-          //   );
-          // }}
           ListFooterComponent={() => <View style={{ height: 16 }} />}
         />
       )}
