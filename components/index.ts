@@ -1,5 +1,6 @@
 // INPUTS
 export { default as OutlinedInput } from './OutlinedInput';
+export { default as PhoneNumberInput } from './PhoneNumberInput';
 
 // BUTTONS
 export { default as DefaultButton } from './DefaultButton';

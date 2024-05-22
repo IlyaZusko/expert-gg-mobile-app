@@ -4,10 +4,15 @@
     "editProfileButton": "Edit profile",
     "settingsButton": "Settings",
     "logOutButton": "Log out",
+    "supportButton": "Support",
     "editProfile": {
       "updateProfilePictire": "Update profile picture",
       "deleteProfilePicture": "Delete profile picture",
       "save": "Save"
+    },
+    "support": {
+      "tipTitle": "If you have any question regarding the operation of the application, you can leave us a call request by filling out the form below and our operator will contact you soon!",
+      "request": "Send"
     },
     "settings": {
       "changeLanguage": "Language",
@@ -54,12 +59,17 @@
     "usernamePlaceholder": "Username...",
     "emailPlaceholder": "Email Address...",
     "passwordPlaceholder": "Password...",
-    "passwordRepeatPlaceholder": "Repeat Password..."
+    "passwordRepeatPlaceholder": "Repeat Password...",
+    "questionPlaceholder": "Your question...",
+    "namePlaceholder": "Name..."
   },
   "errors": {
     "makeBet": "Not enough GG Coins",
     "required": "Required field",
     "max": "Must be less than 75 characters",
+    "max50": "Must be less than 50 characters",
+    "min2": "Must contain at least 2 characters",
+    "phoneMin": "Fill in the field completely",
     "email": "Invalid email address",
     "maxPassword": "Password length cannot be more than 20 characters",
     "minPassword": "Password length cannot be less than 8 characters",
@@ -77,7 +87,8 @@
     "welcomeTitleTwo": "Together with EXPERT GG",
     "login": {
       "socialTip": "Or log in using social media",
-      "noAccount": "No account yet?"
+      "noAccount": "No account yet?",
+      "signInError": "Check the entered data and try again"
     },
     "signUp": {
       "isAccount": "Already have an account?"
@@ -92,6 +103,7 @@
     "getCoins": "Get GG Coins",
     "settings": "Settings",
     "language": "Language",
-    "passwordChange": "Change Password"
+    "passwordChange": "Change Password",
+    "callRequest": "Call request"
   }
 }

@@ -4,12 +4,12 @@ import { IProfile } from '../models/Profile';
 
 interface IInitialState {
   userProfile: IProfile;
-  isShowPopup: boolean;
+  isAuthError: boolean;
 }
 
 const initialState: IInitialState = {
   userProfile: {} as IProfile,
-  isShowPopup: false,
+  isAuthError: false,
 };
 
 export const userSlice = createSlice({
@@ -19,10 +19,10 @@ export const userSlice = createSlice({
     setUserProfile: (state, action: PayloadAction<IProfile>) => {
       state.userProfile = action.payload;
     },
-    setShowPopup: (state, action: PayloadAction<boolean>) => {
-      state.isShowPopup = action.payload;
+    setIsAuthError: (state, action: PayloadAction<boolean>) => {
+      state.isAuthError = action.payload;
     },
   },
 });
 
-export const { setUserProfile, setShowPopup } = userSlice.actions;
+export const { setUserProfile, setIsAuthError } = userSlice.actions;

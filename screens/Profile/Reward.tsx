@@ -9,6 +9,7 @@ import { StyleSheet, Text, View } from 'react-native';
 // RewardedAdEventType,
 // TestIds,
 // } from 'react-native-google-mobile-ads';
+import { UIActivityIndicator } from 'react-native-indicators';
 
 import { DefaultButton } from '@/components';
 import { useSession } from '@/context/ctx';
@@ -34,6 +35,7 @@ const Reward = () => {
   });
   const { session } = useSession();
   const [userTimeout, setUserTimeout] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   if (session) {
     onSnapshot(doc(db, 'users', session), (doc) => {
       const data = doc.data();
@@ -67,6 +69,14 @@ const Reward = () => {
 
     return () => clearInterval(timerInterval);
   }, [userTimeout]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // useEffect(() => {
   //   const unsubscribeLoaded = rewarded.addAdEventListener(
@@ -115,56 +125,60 @@ const Reward = () => {
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.mainGetTitle}>
-          {t(isCanGetReward() ? 'mainTitleActive' : 'mainTitleInactive')}
-        </Text>
-        {isCanGetReward() ? (
-          <View style={styles.getRewardContainer}>
-            <View>
-              <Image
-                source={require('assets/images/coins-image-s.svg')}
-                style={{ width: 100, height: 100 }}
+      {isLoading ? (
+        <UIActivityIndicator color={WHITE_COLOR} size={30} />
+      ) : (
+        <View style={styles.contentContainer}>
+          <Text style={styles.mainGetTitle}>
+            {t(isCanGetReward() ? 'mainTitleActive' : 'mainTitleInactive')}
+          </Text>
+          {isCanGetReward() ? (
+            <View style={styles.getRewardContainer}>
+              <View>
+                <Image
+                  source={require('assets/images/coins-image-s.svg')}
+                  style={{ width: 100, height: 100 }}
+                />
+                <Text style={styles.coinsTitle}>100 GG</Text>
+              </View>
+              <DefaultButton
+                label={t('getCoinsButton')}
+                onClick={() => handleShowAd()}
+                icon={require('assets/icons/ad-icon.svg')}
               />
-              <Text style={styles.coinsTitle}>100 GG</Text>
             </View>
-            <DefaultButton
-              label={t('getCoinsButton')}
-              onClick={() => handleShowAd()}
-              icon={require('assets/icons/ad-icon.svg')}
-            />
-          </View>
-        ) : (
-          <View style={styles.timerContainer}>
-            <View style={{ flex: 1 }}>
-              <View style={styles.timerItem}>
-                <Text style={styles.timerItemTitle}>
-                  {timeLeft.hours.toString().padStart(2, '0')}
-                </Text>
+          ) : (
+            <View style={styles.timerContainer}>
+              <View style={{ flex: 1 }}>
+                <View style={styles.timerItem}>
+                  <Text style={styles.timerItemTitle}>
+                    {timeLeft.hours.toString().padStart(2, '0')}
+                  </Text>
+                </View>
+                <Text style={styles.timeTitle}>{t('hours')}</Text>
               </View>
-              <Text style={styles.timeTitle}>{t('hours')}</Text>
-            </View>
 
-            <View style={{ flex: 1 }}>
-              <View style={styles.timerItem}>
-                <Text style={styles.timerItemTitle}>
-                  {timeLeft.minutes.toString().padStart(2, '0')}
-                </Text>
+              <View style={{ flex: 1 }}>
+                <View style={styles.timerItem}>
+                  <Text style={styles.timerItemTitle}>
+                    {timeLeft.minutes.toString().padStart(2, '0')}
+                  </Text>
+                </View>
+                <Text style={styles.timeTitle}>{t('minutes')}</Text>
               </View>
-              <Text style={styles.timeTitle}>{t('minutes')}</Text>
-            </View>
 
-            <View style={{ flex: 1 }}>
-              <View style={styles.timerItem}>
-                <Text style={styles.timerItemTitle}>
-                  {timeLeft.seconds.toString().padStart(2, '0')}
-                </Text>
+              <View style={{ flex: 1 }}>
+                <View style={styles.timerItem}>
+                  <Text style={styles.timerItemTitle}>
+                    {timeLeft.seconds.toString().padStart(2, '0')}
+                  </Text>
+                </View>
+                <Text style={styles.timeTitle}>{t('seconds')}</Text>
               </View>
-              <Text style={styles.timeTitle}>{t('seconds')}</Text>
             </View>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      )}
     </View>
   );
 };

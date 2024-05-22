@@ -49,6 +49,11 @@ const Profile = () => {
             icon={require('assets/icons/edit-pencil-icon.svg')}
           />
           <DefaultButton
+            label={t('supportButton')}
+            onClick={() => router.push('/(tabs)/(profile)/call-request')}
+            icon={require('assets/icons/call-request-icon.svg')}
+          />
+          <DefaultButton
             label={t('settingsButton')}
             onClick={() => router.push('/(tabs)/(profile)/settings')}
             icon={require('assets/icons/settings-icon.svg')}

@@ -25,9 +25,6 @@ const initialValues = {
 };
 
 const ChangePassword = () => {
-  const { t } = useTranslation('translation', {
-    keyPrefix: 'auth.signUp',
-  });
   const { t: tButtons } = useTranslation('translation', {
     keyPrefix: 'buttons',
   });

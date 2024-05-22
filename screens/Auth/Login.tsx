@@ -5,17 +5,21 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import { LogInValidationSchema } from './utils';
 
-import { DefaultButton, OutlinedInput, SocialLoginButton } from '@/components';
+import { DefaultButton, OutlinedInput } from '@/components';
 import { useSession } from '@/context/ctx';
 import {
+  ERROR_RED_COLOR,
   GREY_TEXT_COLOR,
   LINEAR_END_COLOR,
   LINEAR_START_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
+import { useAppSelector } from '@/helpers/hooks';
+import { setIsAuthError } from '@/store/service/userSlice';
 
 interface LogInValues {
   email: string;
@@ -40,6 +44,9 @@ const Login = () => {
     keyPrefix: 'input',
   });
   const { signIn } = useSession();
+  const { isAuthError } = useAppSelector((state) => state.userSlice);
+
+  const dispatch = useDispatch();
 
   const formik = useFormik<LogInValues>({
     initialValues,
@@ -73,7 +80,10 @@ const Login = () => {
               placeholder={tInput('emailPlaceholder')}
               inputType="email"
               value={values.email}
-              onChange={(v) => setFieldValue('email', v)}
+              onChange={(v) => {
+                dispatch(setIsAuthError(false));
+                setFieldValue('email', v);
+              }}
               error={errors.email}
             />
             <OutlinedInput
@@ -81,21 +91,20 @@ const Login = () => {
               inputType="text"
               isSecureText
               value={values.password}
-              onChange={(v) => setFieldValue('password', v)}
+              onChange={(v) => {
+                dispatch(setIsAuthError(false));
+                setFieldValue('password', v);
+              }}
               error={errors.password}
             />
+            {isAuthError && (
+              <Text style={styles.errorTitle}>{t('signInError')}</Text>
+            )}
             <DefaultButton
               label={tButtons('signIn')}
               onClick={() => submitForm()}
             />
           </View>
-          {/* <Text style={styles.socialSignInTip}>{t('socialTip')}</Text>
-          <View style={styles.socialButtonsContainer}>
-            <SocialLoginButton label="Google" />
-            <SocialLoginButton label="Facebook" />
-            <SocialLoginButton label="Apple" />
-            <SocialLoginButton label="Twitter" />
-          </View> */}
           <View
             style={{
               flexDirection: 'row',
@@ -166,5 +175,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Mont_500',
     fontSize: 12,
     color: '#D6D6D6',
+  },
+  errorTitle: {
+    fontFamily: 'Mont_500',
+    fontSize: 12,
+    color: ERROR_RED_COLOR,
+    paddingHorizontal: 20,
   },
 });

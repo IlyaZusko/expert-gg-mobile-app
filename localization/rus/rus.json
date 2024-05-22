@@ -3,11 +3,16 @@
     "getCoinsButton": "Получить GG coins",
     "editProfileButton": "Редактировать профиль",
     "settingsButton": "Настройки",
+    "supportButton": "Поддержка",
     "logOutButton": "Выйти",
     "editProfile": {
       "updateProfilePictire": "Обновить фото профиля",
       "deleteProfilePicture": "Удалить фото профиля",
       "save": "Сохранить"
+    },
+    "support": {
+      "tipTitle": "Если у вас есть какой либо вопрос, касающийся работы приложения, вы можете оставить нам запрос на звонок, заполнив форму ниже и наш оператор свяжется с вами в ближайшее время!",
+      "request": "Отправить"
     },
     "settings": {
       "changeLanguage": "Язык",
@@ -54,12 +59,17 @@
     "usernamePlaceholder": "Имя пользователя...",
     "emailPlaceholder": "Электронная почта...",
     "passwordPlaceholder": "Пароль...",
-    "passwordRepeatPlaceholder": "Пароль еще раз..."
+    "passwordRepeatPlaceholder": "Пароль еще раз...",
+    "questionPlaceholder": "Ваш вопрос...",
+    "namePlaceholder": "Имя..."
   },
   "errors": {
     "makeBet": "Не хватает GG Coins",
     "required": "Обязательное поле",
     "max": "Должно быть короче 75 символов",
+    "max50": "Должно быть короче 50 символов",
+    "min2": "Должно содержать минимум 2 символа",
+    "phoneMin": "Заполните поле полностью",
     "email": "Некорректный адрес электронной почты",
     "maxPassword": "Длина пароля не может быть больше 20 символов",
     "minPassword": "Длина пароля не может быть меньше 8 символов",
@@ -77,7 +87,8 @@
     "welcomeTitleTwo": "Вместе с EXPERT GG",
     "login": {
       "socialTip": "Или войдите с помощью социальных сетей",
-      "noAccount": "Еще нет аккаунта?"
+      "noAccount": "Еще нет аккаунта?",
+      "signInError": "Проверьте введенные данные и попробуйте еще раз"
     },
     "signUp": {
       "isAccount": "Уже есть аккаунт?"
@@ -92,6 +103,7 @@
     "getCoins": "Получить GG Coins",
     "settings": "Настройки",
     "language": "Язык",
-    "passwordChange": "Смена пароля"
+    "passwordChange": "Смена пароля",
+    "callRequest": "Запрос на звонок"
   }
 }

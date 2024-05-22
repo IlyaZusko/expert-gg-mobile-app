@@ -27,6 +27,10 @@ const ProfileLayout = () => {
         options={{ headerShown: true, title: t('editAccount') }}
       />
       <Stack.Screen
+        name="call-request"
+        options={{ headerShown: true, title: t('callRequest') }}
+      />
+      <Stack.Screen
         name="reward"
         options={{ headerShown: true, title: t('getCoins') }}
       />

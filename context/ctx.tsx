@@ -2,10 +2,12 @@
 import { router } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useStorageState } from './useStorageState';
 
 import { auth } from '@/firebaseConfig';
+import { setIsAuthError } from '@/store/service/userSlice';
 
 const AuthContext = React.createContext<{
   signIn: (email: string, password: string) => void;
@@ -33,6 +35,7 @@ export function useSession() {
 
 export function SessionProvider(props: React.PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
+  const dispatch = useDispatch();
 
   const login = async (email: string, password: string) => {
     try {
@@ -52,9 +55,12 @@ export function SessionProvider(props: React.PropsWithChildren) {
       value={{
         signIn: async (email, password) => {
           const res = await login(email, password);
+          console.log(res);
           if(res) {
             setSession(res);
             router.push('/play');
+          } else {
+            dispatch(setIsAuthError(true));
           }
         },
         signOut: () => {
