@@ -5,6 +5,7 @@ export interface IProfile {
   avatar_url: string;
   count_wins: number;
   total_earn: number;
+  status: string;
 }
 
 export interface IBet {

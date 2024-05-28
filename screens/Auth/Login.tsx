@@ -44,7 +44,9 @@ const Login = () => {
     keyPrefix: 'input',
   });
   const { signIn } = useSession();
-  const { isAuthError } = useAppSelector((state) => state.userSlice);
+  const { isAuthError, isBlockedError, isNotVerifyError } = useAppSelector(
+    (state) => state.userSlice,
+  );
 
   const dispatch = useDispatch();
 
@@ -100,10 +102,35 @@ const Login = () => {
             {isAuthError && (
               <Text style={styles.errorTitle}>{t('signInError')}</Text>
             )}
+            {isBlockedError && (
+              <Text style={styles.errorTitle}>{t('isBlockedError')}</Text>
+            )}
+            {isNotVerifyError && (
+              <Text style={styles.errorTitle}>{t('isNotVerifyError')}</Text>
+            )}
             <DefaultButton
               label={tButtons('signIn')}
               onClick={() => submitForm()}
             />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={styles.termsTitle}>{t('noAccount')} </Text>
+              <TouchableOpacity>
+                <Text
+                  style={[
+                    styles.termsTitle,
+                    { color: WHITE_COLOR, textDecorationLine: 'underline' },
+                  ]}
+                  onPress={() => router.push('/sign-up')}
+                >
+                  {tButtons('signUp')}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <View
             style={{
@@ -112,16 +139,16 @@ const Login = () => {
               paddingTop: 140,
             }}
           >
-            <Text style={styles.termsTitle}>{t('noAccount')} </Text>
+            <Text style={styles.termsTitle}>{t('supportTip')} </Text>
             <TouchableOpacity>
               <Text
                 style={[
                   styles.termsTitle,
                   { color: WHITE_COLOR, textDecorationLine: 'underline' },
                 ]}
-                onPress={() => router.push('/sign-up')}
+                onPress={() => router.push('/call-request')}
               >
-                {tButtons('signUp')}
+                {t('supportLink')}
               </Text>
             </TouchableOpacity>
           </View>

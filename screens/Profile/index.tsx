@@ -51,7 +51,7 @@ const Profile = () => {
           <DefaultButton
             label={t('supportButton')}
             onClick={() => router.push('/(tabs)/(profile)/call-request')}
-            icon={require('assets/icons/call-request-icon.svg')}
+            icon={require('assets/icons/support.svg')}
           />
           <DefaultButton
             label={t('settingsButton')}

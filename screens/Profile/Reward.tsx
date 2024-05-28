@@ -1,14 +1,10 @@
 import dayjs from 'dayjs';
 import { Image } from 'expo-image';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { doc, increment, onSnapshot, updateDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
-// import {
-// RewardedAd,
-// RewardedAdEventType,
-// TestIds,
-// } from 'react-native-google-mobile-ads';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
 
 import { DefaultButton } from '@/components';
@@ -20,22 +16,39 @@ import {
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
+import { videosLinkData } from '@/helpers/constants/Videos';
 
-// const rewarded = RewardedAd.createForAdRequest(
-//   'ca-app-pub-6257067147314410~7423530535',
-//   {
-//     requestNonPersonalizedAdsOnly: true,
-//     keywords: ['fashion', 'clothing'],
-//   },
-// );
+const videoSource = videosLinkData[2];
 
 const Reward = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'profile.reward',
   });
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
   const { session } = useSession();
   const [userTimeout, setUserTimeout] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const ref = useRef(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isWatched, setIsWatched] = useState(false);
+
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = false;
+    player.pause();
+  });
+
+  useEffect(() => {
+    const subscription = player.addListener('playingChange', (isPlaying) => {
+      setIsPlaying(isPlaying);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [player]);
+
   if (session) {
     onSnapshot(doc(db, 'users', session), (doc) => {
       const data = doc.data();
@@ -78,37 +91,32 @@ const Reward = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // useEffect(() => {
-  //   const unsubscribeLoaded = rewarded.addAdEventListener(
-  //     RewardedAdEventType.LOADED,
-  //     () => {
-  //       setLoaded(true);
-  //     },
-  //   );
-  //   const unsubscribeEarned = rewarded.addAdEventListener(
-  //     RewardedAdEventType.EARNED_REWARD,
-  //     (reward) => {
-  //       console.log('User earned reward of ', reward);
-  //     },
-  //   );
-
-  //   // Start loading the rewarded ad straight away
-  //   rewarded.load();
-
-  //   // Unsubscribe from events on unmount
-  //   return () => {
-  //     unsubscribeLoaded();
-  //     unsubscribeEarned();
-  //   };
-  // }, []);
-
   const handleShowAd = async () => {
+    setModalVisible(true);
+    player.play();
+    startWatchAdTimer();
+  };
+
+  const handleGetReward = async () => {
+    setModalVisible(!modalVisible);
+    player.pause();
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
     if (session) {
       await updateDoc(doc(db, 'users', session), {
         ad_view_date: dayjs().toISOString(),
         coins: increment(100),
+        add_watch_count: increment(1),
       });
     }
+  };
+
+  const startWatchAdTimer = () => {
+    setTimeout(() => {
+      setIsWatched(true);
+    }, 15000);
   };
 
   const isCanGetReward = () => {
@@ -179,6 +187,46 @@ const Reward = () => {
           )}
         </View>
       )}
+      <Modal
+        animationType="slide"
+        transparent
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {isWatched ? (
+              <Pressable
+                style={styles.closeAddWrapper}
+                onPress={() => handleGetReward()}
+              >
+                <Text style={styles.getAwardTitle}>{t('rewardGet')}</Text>
+                <Image
+                  source={require('assets/icons/x.svg')}
+                  style={{ width: 14, height: 14 }}
+                />
+              </Pressable>
+            ) : (
+              <Pressable style={styles.closeAddWrapper} disabled>
+                <Image
+                  source={require('assets/icons/x-inactive.svg')}
+                  style={{ width: 14, height: 14 }}
+                />
+              </Pressable>
+            )}
+            <VideoView
+              ref={ref}
+              style={styles.video}
+              player={player}
+              allowsFullscreen={false}
+              allowsPictureInPicture={false}
+              nativeControls={false}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -191,7 +239,6 @@ const styles = StyleSheet.create({
     backgroundColor: BLACK_COLOR,
     paddingTop: 16,
     paddingHorizontal: 16,
-    display: 'flex',
   },
   contentContainer: {
     width: '100%',
@@ -249,5 +296,40 @@ const styles = StyleSheet.create({
     color: WHITE_COLOR,
     textAlign: 'center',
     marginTop: 8,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: BLACK_COLOR,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  video: {
+    width: '100%',
+    height: 275,
+  },
+  closeAddWrapper: {
+    position: 'absolute',
+    top: 80,
+    right: 30,
+    backgroundColor: COVER_COLOR,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: 4,
+  },
+  getAwardTitle: {
+    fontFamily: 'Mont_400',
+    fontSize: 12,
+    color: WHITE_COLOR,
   },
 });

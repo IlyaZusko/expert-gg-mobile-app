@@ -27,7 +27,8 @@
       "getCoinsButton": "Получить GG coins",
       "hours": "Часы",
       "minutes": "Минуты",
-      "seconds": "Секунды"
+      "seconds": "Секунды",
+      "rewardGet": "Награда получена!"
     }
   },
   "leaderboard": {
@@ -88,10 +89,18 @@
     "login": {
       "socialTip": "Или войдите с помощью социальных сетей",
       "noAccount": "Еще нет аккаунта?",
-      "signInError": "Проверьте введенные данные и попробуйте еще раз"
+      "supportTip": "У вас есть вопрос?",
+      "supportLink": "Помощь",
+      "signInError": "Проверьте введенные данные и попробуйте еще раз",
+      "isBlockedError": "Ваш профиль заблокирован, вы можете написать в поддержку",
+      "isNotVerifyError": "Почта не подтверждена"
     },
     "signUp": {
-      "isAccount": "Уже есть аккаунт?"
+      "isAccount": "Уже есть аккаунт?",
+      "auth/email-already-in-use": "Этот адрес электронной почты уже используется",
+      "modalMainTitle": "Активируйте свой аккаунт Expert GG",
+      "modalSubTitle": "Мы отправили письмо с ссылкой для подтверждения на вашу электронную почту.",
+      "modalOkButton": "Понятно!"
     }
   },
   "navigation": {

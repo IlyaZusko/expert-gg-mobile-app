@@ -1,24 +1,38 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { SignUpValidationSchema } from './utils';
 
 import { DefaultButton, OutlinedInput } from '@/components';
-import { useSession } from '@/context/ctx';
 import { auth, db } from '@/firebaseConfig';
 import {
+  ACCENT_BLUE_COLOR,
+  BLACK_COLOR,
+  ERROR_RED_COLOR,
   GREY_TEXT_COLOR,
   LINEAR_END_COLOR,
   LINEAR_START_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
+import { Status } from '@/helpers/constants/Common';
+import { IFirebaseError } from '@/store/models/Firebase';
 
 interface SignUpValues {
   username: string;
@@ -48,7 +62,8 @@ const SignUp = () => {
   const { t: tInput } = useTranslation('translation', {
     keyPrefix: 'input',
   });
-  const { signIn } = useSession();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const formik = useFormik<SignUpValues>({
     initialValues,
@@ -58,27 +73,47 @@ const SignUp = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       const { username, email, passwordConfirm } = values;
-      const user = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        passwordConfirm,
-      );
-
-      const userid = user.user.uid;
-      await setDoc(doc(db, 'users', userid), {
-        username,
-        email,
-        ad_view_date: '',
-        avatar_url: '',
-        coins: 100,
-        count_wins: 0,
-        total_earn: 0,
-      });
-      signIn(email, passwordConfirm);
+      try {
+        setModalVisible(true);
+        const user = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          passwordConfirm,
+        );
+        if (auth.currentUser) {
+          sendEmailVerification(auth.currentUser, {
+            handleCodeInApp: true,
+            url: 'https://expert-gg-mobile-app.firebaseapp.com',
+          });
+        }
+        const userid = user.user.uid;
+        await setDoc(doc(db, 'users', userid), {
+          username,
+          email,
+          ad_view_date: '',
+          add_watch_count: 0,
+          avatar_url: '',
+          coins: 100,
+          count_wins: 0,
+          total_earn: 0,
+          status: Status.Active,
+        });
+        await updateDoc(doc(db, 'users', userid), {
+          user_id: userid,
+        });
+      } catch (err) {
+        const error = err as IFirebaseError;
+        setAuthError(error.code);
+      }
     },
   });
 
   const { values, submitForm, setFieldValue, errors } = formik;
+
+  const handleInputChange = (field: string, value: string) => {
+    setFieldValue(field, value);
+    setAuthError(null);
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -98,14 +133,14 @@ const SignUp = () => {
               placeholder={tInput('usernamePlaceholder')}
               inputType="text"
               value={values.username}
-              onChange={(v) => setFieldValue('username', v)}
+              onChange={(v) => handleInputChange('username', v)}
               error={errors.username}
             />
             <OutlinedInput
               placeholder={tInput('emailPlaceholder')}
               inputType="email"
               value={values.email}
-              onChange={(v) => setFieldValue('email', v)}
+              onChange={(v) => handleInputChange('email', v)}
               error={errors.email}
             />
             <OutlinedInput
@@ -113,7 +148,7 @@ const SignUp = () => {
               inputType="text"
               isSecureText
               value={values.password}
-              onChange={(v) => setFieldValue('password', v)}
+              onChange={(v) => handleInputChange('password', v)}
               error={errors.password}
             />
             <OutlinedInput
@@ -121,9 +156,10 @@ const SignUp = () => {
               inputType="text"
               isSecureText
               value={values.passwordConfirm}
-              onChange={(v) => setFieldValue('passwordConfirm', v)}
+              onChange={(v) => handleInputChange('passwordConfirm', v)}
               error={errors.passwordConfirm}
             />
+            {authError && <Text style={styles.errorTitle}>{t(authError)}</Text>}
             <DefaultButton
               label={tButtons('signUp')}
               onClick={() => submitForm()}
@@ -151,6 +187,37 @@ const SignUp = () => {
           </View>
         </View>
       </LinearGradient>
+      <Modal
+        animationType="fade"
+        transparent
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <Pressable
+          style={styles.centeredView}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <Text style={styles.modalMainTitle}>{t('modalMainTitle')}</Text>
+            <Text style={styles.modalSubTitle}>{t('modalSubTitle')}</Text>
+            <View style={styles.modalOkButtonWrapper}>
+              <TouchableOpacity
+                style={styles.modalOkButton}
+                onPress={() => {
+                  setModalVisible(false);
+                  router.push('/login');
+                }}
+              >
+                <Text style={styles.modalOkButtonTitle}>
+                  {t('modalOkButton')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 };
@@ -199,5 +266,54 @@ const styles = StyleSheet.create({
     fontFamily: 'Mont_500',
     fontSize: 12,
     color: '#D6D6D6',
+  },
+  errorTitle: {
+    fontFamily: 'Mont_500',
+    fontSize: 12,
+    color: ERROR_RED_COLOR,
+    paddingHorizontal: 20,
+  },
+  centeredView: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: '#00000060',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    width: '90%',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 20,
+    backgroundColor: BLACK_COLOR,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+  },
+  modalMainTitle: {
+    fontFamily: 'Mont_600',
+    color: WHITE_COLOR,
+    fontSize: 14,
+  },
+  modalSubTitle: {
+    fontFamily: 'Mont_400',
+    fontSize: 12,
+    color: GREY_TEXT_COLOR,
+  },
+  modalOkButtonWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  modalOkButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: ACCENT_BLUE_COLOR,
+    borderRadius: 4,
+    marginTop: 8,
+  },
+  modalOkButtonTitle: {
+    fontFamily: 'Mont_600',
+    color: WHITE_COLOR,
   },
 });

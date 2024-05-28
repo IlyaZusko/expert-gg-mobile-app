@@ -1,13 +1,21 @@
 /* eslint-disable prettier/prettier */
 import { router } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useStorageState } from './useStorageState';
 
-import { auth } from '@/firebaseConfig';
-import { setIsAuthError } from '@/store/service/userSlice';
+import { auth, db } from '@/firebaseConfig';
+import { Status } from '@/helpers/constants/Common';
+import { IProfile } from '@/store/models/Profile';
+import { setIsAuthError, setIsBlockedError, setIsNotVerifyError } from '@/store/service/userSlice';
+
+interface FireBaseAuthUser {
+  uid: string;
+  isVerified: boolean;
+}
 
 const AuthContext = React.createContext<{
   signIn: (email: string, password: string) => void;
@@ -21,7 +29,6 @@ const AuthContext = React.createContext<{
       isLoading: false,
     });
 
-// This hook can be used to access the user info.
 export function useSession() {
   const value = React.useContext(AuthContext);
   if (process.env.NODE_ENV !== 'production') {
@@ -44,7 +51,11 @@ export function SessionProvider(props: React.PropsWithChildren) {
         email,
         password
       );
-      return user.user.uid;
+      const userData: FireBaseAuthUser = {
+        uid: user.user.uid,
+        isVerified: user.user.emailVerified,
+      };
+      return userData;
     } catch (error) {
       console.log('error', error);
     }
@@ -55,10 +66,26 @@ export function SessionProvider(props: React.PropsWithChildren) {
       value={{
         signIn: async (email, password) => {
           const res = await login(email, password);
-          console.log(res);
           if(res) {
-            setSession(res);
-            router.push('/play');
+            if(res.isVerified) {
+              const docRef = doc(db, 'users', res.uid);
+              const docSnap = await getDoc(docRef);
+              if (docSnap.exists()) {
+                const user = docSnap.data() as IProfile;
+                if (user.status === Status.Active) {
+                  setSession(res.uid);
+                  router.push('/play');
+                } else {
+                  dispatch(setIsBlockedError(true));
+                }
+  
+              } else {
+                dispatch(setIsAuthError(true));
+              }
+            } else {
+              dispatch(setIsNotVerifyError(true));
+            }
+
           } else {
             dispatch(setIsAuthError(true));
           }

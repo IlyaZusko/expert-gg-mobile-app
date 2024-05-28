@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,10 +8,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { CallRequestValidationSchema } from './utils';
 
 import { DefaultButton, OutlinedInput, PhoneNumberInput } from '@/components';
-import { BLACK_COLOR, GREY_TEXT_COLOR } from '@/helpers/constants/Colors';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { useSession } from '@/context/ctx';
 import { db } from '@/firebaseConfig';
-import dayjs from 'dayjs';
+import { BLACK_COLOR, GREY_TEXT_COLOR } from '@/helpers/constants/Colors';
 
 interface CallRequestValues {
   phone: string;
@@ -30,6 +31,7 @@ const CallRequest = () => {
   const { t: tInput } = useTranslation('translation', {
     keyPrefix: 'input',
   });
+  const { session } = useSession();
 
   const formik = useFormik<CallRequestValues>({
     initialValues,
@@ -45,6 +47,7 @@ const CallRequest = () => {
         userQuestion: question,
         dateOfRequest: dayjs().locale('ru').format('D MMMM YYYY, HH:mm'),
         isDone: false,
+        isAuthUser: !!session,
       });
       updateDoc(doc(db, 'callRequest', docRef.id), {
         id: docRef.id,
