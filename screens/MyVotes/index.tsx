@@ -3,17 +3,21 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
+import { useDispatch } from 'react-redux';
 
 import { EmptyListMatches, VoteBlock } from '@/components';
 import { useSession } from '@/context/ctx';
 import { db } from '@/firebaseConfig';
 import { BLACK_COLOR, WHITE_COLOR } from '@/helpers/constants/Colors';
+import { IBet } from '@/store/models/Bet';
+import { clearListBets, setListBets } from '@/store/service/betsSlice';
 import { useFetchBetsMatchesQuery } from '@/store/service/pandaScoreApi';
 
 const MyVotes = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'myVotes',
   });
+  const dispatch = useDispatch();
   const { session } = useSession();
   const [queryParams, setQueryParams] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -21,9 +25,15 @@ const MyVotes = () => {
   if (session) {
     const q = query(collection(db, 'bets'), where('user_id', '==', session));
     onSnapshot(q, (querySnapshot) => {
+      dispatch(clearListBets());
       const matchesId: number[] = [];
+      const newListBets: IBet[] = [];
       querySnapshot.forEach((doc) => {
         matchesId.push(doc.data().match_id);
+        newListBets.push(doc.data() as IBet);
+      });
+      newListBets.forEach((item) => {
+        dispatch(setListBets(item));
       });
       const queryStr =
         matchesId.length > 0

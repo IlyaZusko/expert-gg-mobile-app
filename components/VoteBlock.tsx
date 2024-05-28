@@ -9,7 +9,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -27,7 +27,8 @@ import {
   INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
-import { IBet } from '@/store/models/Profile';
+import { useAppSelector } from '@/helpers/hooks';
+import { IBet } from '@/store/models/Bet';
 import { IVotedMatch } from '@/store/models/VotedMatches';
 
 interface IVoteBlock {
@@ -37,6 +38,9 @@ interface IVoteBlock {
 const VoteBlock = ({ item }: IVoteBlock) => {
   const { i18n } = useTranslation('translation');
   const { session } = useSession();
+  const { listBets } = useAppSelector((state) => state.bets);
+  const [isCalculated, setIsCalculated] = useState<boolean>(false);
+
   const getStatusSymbol = (isWin: boolean | null) => {
     if (isWin === null) {
       return '';
@@ -57,28 +61,28 @@ const VoteBlock = ({ item }: IVoteBlock) => {
 
   const isWin =
     item.winner === null ? null : item.winner.name === item.bet_target_name;
+  // const isWin = false;
 
   const updateBetResult = async () => {
-    const bets: IBet[] = [];
-    const q = query(collection(db, 'bets'), where('user_id', '==', session));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((bet) => {
-      bets.push({ ...bet.data(), document_id: bet.id } as IBet);
-    });
-    const targetBet = bets.find((bet) => bet.match_id === item.id);
+    // console.log(listBets);
+    const targetBet = listBets.find((bet) => bet.match_id === item.id);
     const targetBetDocId = targetBet?.document_id;
     if (targetBet?.isBetWon === null && targetBetDocId && session) {
+      console.log('DDDDDDDDDDDDD', targetBet);
       await updateDoc(doc(db, 'bets', targetBetDocId), {
         isBetWon: isWin,
       });
-      await updateDoc(doc(db, 'users', session), {
-        count_wins: increment(1),
-        total_earn: increment(targetBet.coins_amount),
-      });
+      if (isWin === true) {
+        await updateDoc(doc(db, 'users', session), {
+          count_wins: increment(1),
+          total_earn: increment(targetBet.coins_amount * 2),
+          coins: increment(targetBet.coins_amount * 2),
+        });
+      }
     }
   };
-
-  if (isWin !== null && session) {
+  if (isWin !== null && session && listBets.length > 0 && !isCalculated) {
+    setIsCalculated(true);
     updateBetResult();
   }
 
@@ -126,7 +130,10 @@ const VoteBlock = ({ item }: IVoteBlock) => {
             ]}
           >
             {getStatusSymbol(isWin)}
-            {item.coins_amount} gg
+            {isWin === true
+              ? Number(item.coins_amount) * 2
+              : item.coins_amount}{' '}
+            gg
           </Text>
         </View>
       </View>

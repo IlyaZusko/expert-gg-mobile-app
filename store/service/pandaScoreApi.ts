@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as SecureStore from 'expo-secure-store';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
+import { IBet } from '../models/Bet';
 import { IMatchesList, IPath } from '../models/Matches';
-import { IBet } from '../models/Profile';
 import { IVotedMatch } from '../models/VotedMatches';
 
 import { db } from '@/firebaseConfig';

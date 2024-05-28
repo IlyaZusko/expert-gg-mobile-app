@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { CallRequestValidationSchema } from './utils';
 
@@ -41,17 +42,26 @@ const CallRequest = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       const { name, phone, question } = values;
-      const docRef = await addDoc(collection(db, 'callRequest'), {
-        userName: name,
-        userPhone: phone,
-        userQuestion: question,
-        dateOfRequest: dayjs().locale('ru').format('D MMMM YYYY, HH:mm'),
-        isDone: false,
-        isAuthUser: !!session,
-      });
-      updateDoc(doc(db, 'callRequest', docRef.id), {
-        id: docRef.id,
-      });
+      try {
+        const docRef = await addDoc(collection(db, 'callRequest'), {
+          userName: name,
+          userPhone: phone,
+          userQuestion: question,
+          dateOfRequest: dayjs().locale('ru').format('D MMMM YYYY, HH:mm'),
+          isDone: false,
+          isAuthUser: !!session,
+        });
+        updateDoc(doc(db, 'callRequest', docRef.id), {
+          id: docRef.id,
+        });
+        Toast.show({
+          type: 'success',
+          text1: t('alertMainTitle'),
+          text2: t('alertSubTitle'),
+        });
+      } catch (err) {
+        console.log(err);
+      }
     },
   });
 

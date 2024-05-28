@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 
 import { EditProfileValidationSchema } from './utils';
@@ -56,6 +57,11 @@ const EditProfile = () => {
             username,
           });
           router.back();
+          Toast.show({
+            type: 'success',
+            text1: t('alertMainTitle'),
+            text2: t('alertSubTitle'),
+          });
         }
       } catch (e) {
         console.log('error', e);

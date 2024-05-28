@@ -5,21 +5,31 @@
     "settingsButton": "Settings",
     "logOutButton": "Log out",
     "supportButton": "Support",
+    "modalMainTitle": "Are you sure you want to log out?",
+    "modalSubTitle": "After log out, you will be redirected to a welcome screen",
+    "modalOkButton": "Log out",
+    "modalCancelButton": "Cancel",
     "editProfile": {
       "updateProfilePictire": "Update profile picture",
       "deleteProfilePicture": "Delete profile picture",
-      "save": "Save"
+      "save": "Save",
+      "alertMainTitle": "Profile updated",
+      "alertSubTitle": "Your profile has been successfully updated"
     },
     "support": {
       "tipTitle": "If you have any question regarding the operation of the application, you can leave us a call request by filling out the form below and our operator will contact you soon!",
-      "request": "Send"
+      "request": "Send",
+      "alertMainTitle": "Call request sent",
+      "alertSubTitle": "Our operator will contact you as soon as possible"
     },
     "settings": {
       "changeLanguage": "Language",
       "changePassword": "Change Password",
       "ru": "Russian",
       "en": "English",
-      "changeTip": "Select the language you would like to see as the main language of the application"
+      "changeTip": "Select the language you would like to see as the main language of the application",
+      "alertMainTitle": "Language changed",
+      "alertSubTitle": "The application language has been successfully changed"
     },
     "reward": {
       "mainTitleActive": "Not enough coins? Get GG coins for watching ads!",
@@ -28,7 +38,9 @@
       "hours": "Hours",
       "minutes": "Minutes",
       "seconds": "Seconds",
-      "rewardGet": "Reward received!"
+      "rewardGet": "Reward received!",
+      "alertMainTitle": "Award received",
+      "alertSubTitle": "Your balance is credited with 100 GG coins"
     }
   },
   "leaderboard": {

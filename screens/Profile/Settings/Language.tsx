@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-radio-buttons-group';
+import Toast from 'react-native-toast-message';
 
 import {
   ACCENT_BLUE_COLOR,
@@ -22,6 +23,11 @@ const Language = () => {
   const handleSelectLanguage = (id: string, targetLanguage: string) => {
     i18n.changeLanguage(targetLanguage);
     setSelectedId(id);
+    Toast.show({
+      type: 'success',
+      text1: t('alertMainTitle'),
+      text2: t('alertSubTitle'),
+    });
   };
 
   return (

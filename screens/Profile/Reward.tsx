@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
+import Toast from 'react-native-toast-message';
 
 import { DefaultButton } from '@/components';
 import { useSession } from '@/context/ctx';
@@ -99,6 +100,11 @@ const Reward = () => {
 
   const handleGetReward = async () => {
     setModalVisible(!modalVisible);
+    Toast.show({
+      type: 'success',
+      text1: t('alertMainTitle'),
+      text2: t('alertSubTitle'),
+    });
     player.pause();
     setIsLoading(true);
     setTimeout(() => {

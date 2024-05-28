@@ -67,7 +67,8 @@ const MatchBlock: React.FC<IMatchBlock> = ({
     onSubmit: async (values) => {
       try {
         const coinsAmount = Number(values.coinsAmount);
-        if (coins && coinsAmount <= coins) {
+        console.log(coinsAmount);
+        if (coins && coinsAmount <= coins && coinsAmount !== 0) {
           const betData = {
             coins_amount: coinsAmount,
             match_id: item.id,
@@ -81,7 +82,10 @@ const MatchBlock: React.FC<IMatchBlock> = ({
             await updateDoc(doc(db, 'users', userId), {
               coins: coins - coinsAmount,
             });
-            await addDoc(collection(db, 'bets'), betData);
+            const bet = await addDoc(collection(db, 'bets'), betData);
+            await updateDoc(doc(db, 'bets', bet.id), {
+              document_id: bet.id,
+            });
           }
           setSelectedTeam(null);
           setSelectedTeamId(null);

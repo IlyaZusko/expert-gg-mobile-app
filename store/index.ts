@@ -1,10 +1,11 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
-import { pandaScoreApi, userSlice } from './service';
+import { betsSlice, pandaScoreApi, userSlice } from './service';
 
 const rootReducer = combineReducers({
   [pandaScoreApi.reducerPath]: pandaScoreApi.reducer,
   [userSlice.reducerPath]: userSlice.reducer,
+  [betsSlice.reducerPath]: betsSlice.reducer,
 });
 
 export const store = configureStore({
