@@ -39,6 +39,8 @@ const EditProfile = () => {
   const { userProfile } = useAppSelector((state) => state.userSlice);
   const [image, setImage] = useState<string | null>(null);
 
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+
   const initialValues = {
     username: userProfile?.username || '',
   };
@@ -51,11 +53,13 @@ const EditProfile = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
+        setIsButtonLoading(true);
         const { username } = values;
         if (session) {
           await updateDoc(doc(db, 'users', session), {
             username,
           });
+          setIsButtonLoading(false);
           router.back();
           Toast.show({
             type: 'success',
@@ -64,6 +68,7 @@ const EditProfile = () => {
           });
         }
       } catch (e) {
+        setIsButtonLoading(false);
         console.log('error', e);
       }
     },
@@ -158,7 +163,11 @@ const EditProfile = () => {
           onChange={(v) => setFieldValue('username', v)}
           error={errors.username}
         />
-        <DefaultButton label={t('save')} onClick={() => submitForm()} />
+        <DefaultButton
+          label={t('save')}
+          onClick={() => submitForm()}
+          isLoading={isButtonLoading}
+        />
       </View>
     </View>
   );
@@ -170,7 +179,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: BLACK_COLOR,
-    paddingHorizontal: 46,
+    paddingHorizontal: 30,
     paddingTop: 36,
   },
   avatarContainer: {

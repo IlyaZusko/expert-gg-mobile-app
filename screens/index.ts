@@ -3,6 +3,7 @@ export { default as Login } from './Auth/Login';
 export { default as SignUp } from './Auth/SignUp';
 export { default as Welcome } from './Auth/Welcome';
 export { default as EmailConfirmation } from './Auth/EmailConfirmation';
+export { default as PasswordReset } from './Auth/PasswordReset';
 
 // PLAY
 export { default as Play } from './Play';

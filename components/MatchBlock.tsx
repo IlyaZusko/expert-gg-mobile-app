@@ -67,7 +67,6 @@ const MatchBlock: React.FC<IMatchBlock> = ({
     onSubmit: async (values) => {
       try {
         const coinsAmount = Number(values.coinsAmount);
-        console.log(coinsAmount);
         if (coins && coinsAmount <= coins && coinsAmount !== 0) {
           const betData = {
             coins_amount: coinsAmount,

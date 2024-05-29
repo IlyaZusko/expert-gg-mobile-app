@@ -29,7 +29,9 @@
       "en": "English",
       "changeTip": "Select the language you would like to see as the main language of the application",
       "alertMainTitle": "Language changed",
-      "alertSubTitle": "The application language has been successfully changed"
+      "alertSubTitle": "The application language has been successfully changed",
+      "alertMainTitlePasswordChange": "Password changed",
+      "alertSubTitlePasswordChange": "Your password has been successfully changed"
     },
     "reward": {
       "mainTitleActive": "Not enough coins? Get GG coins for watching ads!",
@@ -93,11 +95,20 @@
   "buttons": {
     "signUp": "Sign Up",
     "signIn": "Log in",
-    "confirm": "Confirm" 
+    "confirm": "Confirm",
+    "resetPassword": "Forgot your password?",
+    "reset": "Recover"
   },
   "auth": {
     "welcomeTitleOne": "Become a part of cybersports now!",
     "welcomeTitleTwo": "Together with EXPERT GG",
+    "passwordRecovery": {
+      "mainTitle": "Password recovery",
+      "noEmailError": "There is no user with this e-mail address",
+      "alertMainTitle": "Sent",
+      "alertSubTitle": "Password recovery link sent",
+      "back": "Back to account login"
+    },
     "login": {
       "socialTip": "Or log in using social media",
       "noAccount": "No account yet?",

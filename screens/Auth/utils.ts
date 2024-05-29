@@ -12,6 +12,10 @@ export const LogInValidationSchema = Yup.object().shape({
     ),
 });
 
+export const PasswordRecoveryValidationSchema = Yup.object().shape({
+  email: Yup.string().required('required').max(75, 'max').email('email'),
+});
+
 export const SignUpValidationSchema = Yup.object().shape({
   username: Yup.string()
     .required('required')

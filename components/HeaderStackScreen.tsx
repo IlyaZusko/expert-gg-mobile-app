@@ -16,7 +16,7 @@ const HeaderStackScreen: React.FC<IHeaderStackScreen> = ({
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
-        style={{ position: 'absolute', left: 16, bottom: 12 }}
+        style={{ position: 'absolute', left: 16, bottom: 12, width: 40 }}
         onPress={onClick}
       >
         <Image

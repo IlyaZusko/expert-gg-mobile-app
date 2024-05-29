@@ -25,6 +25,7 @@ const AuthLayout = () => {
       <Stack.Screen name="login" options={{ headerShown: false }} />
       <Stack.Screen name="sign-up" options={{ headerShown: false }} />
       <Stack.Screen name="email-confirm" options={{ headerShown: false }} />
+      <Stack.Screen name="password-reset" options={{ headerShown: false }} />
       <Stack.Screen
         name="call-request"
         options={{ headerShown: true, title: t('callRequest') }}

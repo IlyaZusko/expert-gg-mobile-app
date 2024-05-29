@@ -1,9 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { onAuthStateChanged } from 'firebase/auth';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { auth } from '@/firebaseConfig';
 import {
   LINEAR_END_COLOR,
   LINEAR_START_COLOR,
@@ -11,13 +9,6 @@ import {
 } from '@/helpers/constants/Colors';
 
 const EmailConfirmation = () => {
-  onAuthStateChanged(auth, (user) => {
-    console.log(user);
-    if (user && user.emailVerified) {
-      console.log('YEEEEEEEE');
-    }
-  });
-
   return (
     <View style={styles.wrapper}>
       <LinearGradient

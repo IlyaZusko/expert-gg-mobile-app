@@ -1,12 +1,24 @@
-import { updatePassword } from 'firebase/auth';
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from 'firebase/auth';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { PasswordChangeValidationSchema } from './utils';
 
 import { DefaultButton, OutlinedInput } from '@/components';
 import { auth } from '@/firebaseConfig';
-import { BLACK_COLOR, GREY_TEXT_COLOR } from '@/helpers/constants/Colors';
+import {
+  BLACK_COLOR,
+  ERROR_RED_COLOR,
+  GREY_TEXT_COLOR,
+} from '@/helpers/constants/Colors';
+import { IFirebaseError } from '@/store/models/Firebase';
 
 interface SignUpValues {
   oldPassword: string;
@@ -15,16 +27,18 @@ interface SignUpValues {
 }
 
 const initialValues = {
-  oldPassword: 'Kjgeijr1',
-  password: 'Gjgeufq1',
-  passwordConfirm: 'Gjgeufq1',
-  // username: '',
-  // email: '',
-  // password: '',
-  // passwordConfirm: '',
+  // oldPassword: 'Gjgeufq1',
+  // password: 'Gjgeufq2',
+  // passwordConfirm: 'Gjgeufq2',
+  oldPassword: '',
+  password: '',
+  passwordConfirm: '',
 };
 
 const ChangePassword = () => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'profile.settings',
+  });
   const { t: tButtons } = useTranslation('translation', {
     keyPrefix: 'buttons',
   });
@@ -32,43 +46,51 @@ const ChangePassword = () => {
     keyPrefix: 'input',
   });
 
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+
   const formik = useFormik<SignUpValues>({
     initialValues,
-    // validationSchema: SignUpValidationSchema,
+    validationSchema: PasswordChangeValidationSchema,
     enableReinitialize: true,
     validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async (values) => {
+      const { oldPassword, passwordConfirm } = values;
       try {
-        if (auth.currentUser) {
-          const user = auth.currentUser;
-          console.log(user);
-          await updatePassword(user, values.passwordConfirm);
+        setIsButtonLoading(true);
+        const user = auth.currentUser;
+        if (user && user.email) {
+          const cred = EmailAuthProvider.credential(user.email, oldPassword);
+          reauthenticateWithCredential(user, cred)
+            .then(async () => {
+              await updatePassword(user, passwordConfirm);
+              setIsButtonLoading(false);
+              Toast.show({
+                type: 'success',
+                text1: t('alertMainTitlePasswordChange'),
+                text2: t('alertSubTitlePasswordChange'),
+              });
+            })
+            .catch((error) => {
+              setIsButtonLoading(false);
+              const err = error as IFirebaseError;
+              setAuthError(err.code);
+            });
         }
       } catch (err) {
+        setIsButtonLoading(false);
         console.log(err);
       }
-      // const { username, email, passwordConfirm } = values;
-      // const user = await createUserWithEmailAndPassword(
-      //   auth,
-      //   email,
-      //   passwordConfirm,
-      // );
-      // const userid = user.user.uid;
-      // await setDoc(doc(db, 'users', userid), {
-      //   username,
-      //   email,
-      //   ad_view_date: '',
-      //   avatar_url: '',
-      //   coins: 100,
-      //   count_wins: 0,
-      //   total_earn: 0,
-      // });
-      // signIn(email, passwordConfirm);
     },
   });
 
   const { values, submitForm, setFieldValue, errors } = formik;
+
+  const handleInputChange = (field: string, value: string) => {
+    setFieldValue(field, value);
+    setAuthError(null);
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -77,30 +99,32 @@ const ChangePassword = () => {
           <OutlinedInput
             placeholder={tInput('passwordPlaceholder')}
             inputType="text"
-            // isSecureText
+            isSecureText
             value={values.oldPassword}
-            onChange={(v) => setFieldValue('oldPassword', v)}
+            onChange={(v) => handleInputChange('oldPassword', v)}
             error={errors.oldPassword}
           />
           <OutlinedInput
             placeholder={tInput('passwordPlaceholder')}
             inputType="text"
-            // isSecureText
+            isSecureText
             value={values.password}
-            onChange={(v) => setFieldValue('password', v)}
+            onChange={(v) => handleInputChange('password', v)}
             error={errors.password}
           />
           <OutlinedInput
             placeholder={tInput('passwordRepeatPlaceholder')}
             inputType="text"
-            // isSecureText
+            isSecureText
             value={values.passwordConfirm}
-            onChange={(v) => setFieldValue('passwordConfirm', v)}
+            onChange={(v) => handleInputChange('passwordConfirm', v)}
             error={errors.passwordConfirm}
           />
+          {authError && <Text style={styles.errorTitle}>{t(authError)}</Text>}
           <DefaultButton
             label={tButtons('confirm')}
             onClick={() => submitForm()}
+            isLoading={isButtonLoading}
           />
         </View>
       </View>
@@ -156,5 +180,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Mont_500',
     fontSize: 12,
     color: '#D6D6D6',
+  },
+  errorTitle: {
+    fontFamily: 'Mont_500',
+    fontSize: 12,
+    color: ERROR_RED_COLOR,
+    paddingHorizontal: 20,
   },
 });

@@ -29,7 +29,10 @@
       "en": "Английский",
       "changeTip": "Выберите язык, который хотели бы видеть в качестве основного языка приложения",
       "alertMainTitle": "Язык изменен",
-      "alertSubTitle": "Язык приложения успешно изменен"
+      "alertSubTitle": "Язык приложения успешно изменен",
+      "alertMainTitlePasswordChange": "Пароль изменен",
+      "alertSubTitlePasswordChange": "Ваш пароль успешно изменен",
+      "auth/invalid-credential": "Вы ввели некорректный старый пароль"
     },
     "reward": {
       "mainTitleActive": "Недостаточно монет? Получи GG coins за просмотр рекламы!",
@@ -95,11 +98,20 @@
   "buttons": {
     "signUp": "Зарегистрироваться",
     "signIn": "Войти",
-    "confirm": "Подтвердить" 
+    "confirm": "Подтвердить",
+    "resetPassword": "Забыли пароль?",
+    "reset": "Восстановить"
   },
   "auth": {
     "welcomeTitleOne": "Стань частью киберспорта уже сейчас!",
     "welcomeTitleTwo": "Вместе с EXPERT GG",
+    "passwordRecovery": {
+      "mainTitle": "Восстановление пароля",
+      "noEmailError": "Пользователя с этим адресом не существует",
+      "alertMainTitle": "Отправлено",
+      "alertSubTitle": "Ссылка для восстановления пароля отправлена",
+      "back": "Вернуться к входу в аккаунт"
+    },
     "login": {
       "socialTip": "Или войдите с помощью социальных сетей",
       "noAccount": "Еще нет аккаунта?",

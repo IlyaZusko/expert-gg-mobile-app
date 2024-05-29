@@ -116,6 +116,25 @@ const Login = () => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
+                paddingBottom: 10,
+              }}
+            >
+              <TouchableOpacity>
+                <Text
+                  style={[
+                    styles.termsTitle,
+                    { color: WHITE_COLOR, textDecorationLine: 'underline' },
+                  ]}
+                  onPress={() => router.push('/password-reset')}
+                >
+                  {tButtons('resetPassword')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
               }}
             >
               <Text style={styles.termsTitle}>{t('noAccount')} </Text>
@@ -136,7 +155,7 @@ const Login = () => {
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
-              paddingTop: 140,
+              paddingTop: 130,
             }}
           >
             <Text style={styles.termsTitle}>{t('supportTip')} </Text>

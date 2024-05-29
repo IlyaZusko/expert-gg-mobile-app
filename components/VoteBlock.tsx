@@ -52,10 +52,10 @@ const VoteBlock = ({ item }: IVoteBlock) => {
 
   const isWin =
     item.winner === null ? null : item.winner.id === item.bet_target_id;
+  // const isWin = true;
   // const isWin = false;
 
   const updateBetResult = async () => {
-    // console.log(listBets);
     const targetBet = listBets.find((bet) => bet.match_id === item.id);
     const targetBetDocId = targetBet?.document_id;
     if (
@@ -64,7 +64,6 @@ const VoteBlock = ({ item }: IVoteBlock) => {
       targetBetDocId &&
       session
     ) {
-      console.log('DDDDDDDDDDDDD', targetBet);
       await updateDoc(doc(db, 'bets', targetBetDocId), {
         isBetWon: isWin,
       });

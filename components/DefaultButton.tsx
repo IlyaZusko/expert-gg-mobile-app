@@ -1,10 +1,12 @@
 import { Image, ImageSource } from 'expo-image';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
 
 import {
   ACCENT_BLUE_COLOR,
   ACCENT_GOLD_COLOR,
+  INACTIVE_COLOR,
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
 
@@ -12,6 +14,8 @@ interface IDefaultButton {
   label: string;
   onClick: () => void;
   isPrimary?: boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
   icon?:
     | string
     | number
@@ -27,6 +31,8 @@ const DefaultButton: React.FC<IDefaultButton> = ({
   onClick,
   isPrimary,
   icon,
+  isLoading,
+  isDisabled,
   ...props
 }) => {
   return (
@@ -34,8 +40,15 @@ const DefaultButton: React.FC<IDefaultButton> = ({
       onPress={onClick}
       style={[
         styles.button,
-        { backgroundColor: isPrimary ? ACCENT_GOLD_COLOR : ACCENT_BLUE_COLOR },
+        {
+          backgroundColor: isPrimary
+            ? ACCENT_GOLD_COLOR
+            : isDisabled
+              ? INACTIVE_COLOR
+              : ACCENT_BLUE_COLOR,
+        },
       ]}
+      disabled={isLoading || isDisabled}
     >
       {icon && (
         <Image
@@ -44,6 +57,11 @@ const DefaultButton: React.FC<IDefaultButton> = ({
         />
       )}
       <Text style={styles.buttonLabel}>{label}</Text>
+      {isLoading && (
+        <View style={{ width: 20, marginLeft: 8 }}>
+          <MaterialIndicator color={WHITE_COLOR} size={20} />
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

@@ -4,11 +4,7 @@ export const PasswordChangeValidationSchema = Yup.object().shape({
   oldPassword: Yup.string()
     .required('required')
     .min(8, 'minPassword')
-    .max(20, 'maxPassword')
-    .matches(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]+$/,
-      'incorrectPassword',
-    ),
+    .max(20, 'maxPassword'),
   password: Yup.string()
     .required('required')
     .min(8, 'minPassword')
