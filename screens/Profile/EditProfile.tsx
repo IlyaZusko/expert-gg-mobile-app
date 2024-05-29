@@ -80,6 +80,11 @@ const EditProfile = () => {
       await updateDoc(doc(db, 'users', session), {
         avatar_url: '',
       });
+      Toast.show({
+        type: 'success',
+        text1: t('alertMainTitleAvatarDelete'),
+        text2: t('alertSubTitleAvatarDelete'),
+      });
     }
   };
 
@@ -102,6 +107,11 @@ const EditProfile = () => {
         getDownloadURL(snapshot.ref).then(async (downloadURL) => {
           await updateDoc(doc(db, 'users', session), {
             avatar_url: downloadURL,
+          });
+          Toast.show({
+            type: 'success',
+            text1: t('alertMainTitleAvatarUpload'),
+            text2: t('alertSubTitleAvatarUpload'),
           });
         });
       });

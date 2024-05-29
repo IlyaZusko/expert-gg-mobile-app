@@ -14,7 +14,11 @@
       "deleteProfilePicture": "Delete profile picture",
       "save": "Save",
       "alertMainTitle": "Profile updated",
-      "alertSubTitle": "Your profile has been successfully updated"
+      "alertSubTitle": "Your profile has been successfully updated",
+      "alertMainTitleAvatarUpload": "Profile photo updated",
+      "alertSubTitleAvatarUpload": "Your profile picture has been successfully updated",
+      "alertMainTitleAvatarDelete": "Profile photo deleted",
+      "alertSubTitleAvatarDelete": "Your profile picture has been successfully deleted"
     },
     "support": {
       "tipTitle": "If you have any question regarding the operation of the application, you can leave us a call request by filling out the form below and our operator will contact you soon!",
