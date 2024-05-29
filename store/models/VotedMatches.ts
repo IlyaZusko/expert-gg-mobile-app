@@ -5,4 +5,5 @@ export interface IVotedMatch extends IMatchesList {
   bet_target_name: string;
   coins_amount: string;
   date_of_bet: string;
+  bet_target_id: number;
 }

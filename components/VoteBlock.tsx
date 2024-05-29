@@ -1,14 +1,6 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import {
-  collection,
-  doc,
-  getDocs,
-  increment,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
+import { doc, increment, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
@@ -28,7 +20,6 @@ import {
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
 import { useAppSelector } from '@/helpers/hooks';
-import { IBet } from '@/store/models/Bet';
 import { IVotedMatch } from '@/store/models/VotedMatches';
 
 interface IVoteBlock {
@@ -60,14 +51,19 @@ const VoteBlock = ({ item }: IVoteBlock) => {
     : require('assets/icons/small-logo.svg');
 
   const isWin =
-    item.winner === null ? null : item.winner.name === item.bet_target_name;
+    item.winner === null ? null : item.winner.id === item.bet_target_id;
   // const isWin = false;
 
   const updateBetResult = async () => {
     // console.log(listBets);
     const targetBet = listBets.find((bet) => bet.match_id === item.id);
     const targetBetDocId = targetBet?.document_id;
-    if (targetBet?.isBetWon === null && targetBetDocId && session) {
+    if (
+      targetBet?.isBetWon === null &&
+      item.winner !== null &&
+      targetBetDocId &&
+      session
+    ) {
       console.log('DDDDDDDDDDDDD', targetBet);
       await updateDoc(doc(db, 'bets', targetBetDocId), {
         isBetWon: isWin,
@@ -123,7 +119,7 @@ const VoteBlock = ({ item }: IVoteBlock) => {
                 color:
                   isWin === null
                     ? CRICKET_GREEN_COLOR
-                    : isWin
+                    : isWin === true
                       ? GOLD_COLOR
                       : ERROR_RED_COLOR,
               },

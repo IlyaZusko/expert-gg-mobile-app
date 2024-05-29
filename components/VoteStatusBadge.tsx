@@ -30,7 +30,7 @@ const VoteStatusBadge: React.FC<IVoteStatusBadge> = ({
           borderColor:
             isWin === null
               ? CRICKET_GREEN_COLOR
-              : isWin
+              : isWin === true
                 ? GOLD_COLOR
                 : ERROR_RED_COLOR,
           left: 16,
@@ -38,7 +38,7 @@ const VoteStatusBadge: React.FC<IVoteStatusBadge> = ({
       ]}
     >
       <Text style={styles.votedBadgeTitle}>
-        {isWin === null ? 'Активная' : isWin ? 'Победа' : 'Поражение'}
+        {isWin === null ? 'Активная' : isWin === true ? 'Победа' : 'Поражение'}
       </Text>
     </View>
   );
