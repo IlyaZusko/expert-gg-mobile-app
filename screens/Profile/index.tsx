@@ -64,6 +64,11 @@ const Profile = () => {
             icon={require('assets/icons/support.svg')}
           />
           <DefaultButton
+            label={t('FAQbutton')}
+            onClick={() => router.push('/(tabs)/(profile)/faq')}
+            icon={require('assets/icons/info.svg')}
+          />
+          <DefaultButton
             label={t('settingsButton')}
             onClick={() => router.push('/(tabs)/(profile)/settings')}
             icon={require('assets/icons/settings-icon.svg')}

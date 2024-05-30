@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   versusTitle: {
-    fontFamily: 'Mont_400',
+    fontFamily: 'Mont_600',
     fontSize: 16,
     color: WHITE_COLOR,
   },

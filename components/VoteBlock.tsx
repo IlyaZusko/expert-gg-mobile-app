@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   versusTitle: {
-    fontFamily: 'Mont_400',
+    fontFamily: 'Mont_600',
     fontSize: 16,
     color: WHITE_COLOR,
   },

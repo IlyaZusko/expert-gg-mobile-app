@@ -31,6 +31,10 @@ const ProfileLayout = () => {
         options={{ headerShown: true, title: t('callRequest') }}
       />
       <Stack.Screen
+        name="faq"
+        options={{ headerShown: true, title: t('faq') }}
+      />
+      <Stack.Screen
         name="reward"
         options={{ headerShown: true, title: t('getCoins') }}
       />

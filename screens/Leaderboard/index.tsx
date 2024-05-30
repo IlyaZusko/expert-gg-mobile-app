@@ -1,5 +1,11 @@
 /* eslint-disable indent */
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,6 +42,7 @@ const LeaderBoard = () => {
   const getUsersData = async () => {
     const q = query(
       collection(db, 'users'),
+      where('status', '==', 'active'),
       orderBy(isActiveTab(activeTab) ? 'count_wins' : 'total_earn', 'desc'),
     );
     onSnapshot(q, (querySnapshot) => {

@@ -3,12 +3,32 @@
     "getCoinsButton": "Get GG coins",
     "editProfileButton": "Edit profile",
     "settingsButton": "Settings",
+    "FAQbutton": "FAQ",
     "logOutButton": "Log out",
     "supportButton": "Support",
     "modalMainTitle": "Are you sure you want to log out?",
     "modalSubTitle": "After log out, you will be redirected to a welcome screen",
     "modalOkButton": "Log out",
     "modalCancelButton": "Cancel",
+    "info": {
+      "tipTitle": "Here you can learn basic information about using the application and the purpose of the various screens of the Expert GG application",
+      "playScreenInfo": {
+        "title": "Play",
+        "subTitle": "The 'Game' screen of the application provides a list of all the game events available for betting. At the top of the screen there are filters by game type and also by date of the game event. To bet on the match you are interested in, simply click on your preferred team, enter the amount of GG coins and click on the bet button."
+      },
+      "votesScreenInfo": {
+        "title": "My Votes",
+        "subTitle": "The 'My Bets' screen of the app shows the in-play events on which you have already placed a bet. The top left corner of each block shows the status of the bet, which indicates the outcome of the bet. The bottom right corner shows the amount of GG coins you have bet on that game event. In case the team you bet on wins the game event, your balance will be credited with the amount of GG coins multiplied by two from the amount you specified when you made the bet in the 'Game' section."
+      },
+      "leaderboardScreenInfo": {
+        "title": "Leaderboard",
+        "subTitle": "The 'Leaderboard' application screen shows a list of all users of the application, except those who have been blocked by the administration of the application. There are two types of filter at the top of the screen: filter by number of winning bets and filter by total winnings."
+      },
+      "profileScreenInfo": {
+        "title": "Profile",
+        "subTitle": "The 'Profile' screen provides basic information about your account (avatar, username and email). Below you will find buttons to navigate through the relevant sections of the app, as well as a button to log out of your account."
+      }
+    },
     "editProfile": {
       "updateProfilePictire": "Update profile picture",
       "deleteProfilePicture": "Delete profile picture",
@@ -24,7 +44,10 @@
       "tipTitle": "If you have any question regarding the operation of the application, you can leave us a call request by filling out the form below and our operator will contact you soon!",
       "request": "Send",
       "alertMainTitle": "Call request sent",
-      "alertSubTitle": "Our operator will contact you as soon as possible"
+      "alertSubTitle": "Our operator will contact you as soon as possible",
+      "mailTip": "Or send us an e-mail",
+      "alertMainTitleCopy": "E-mail copied",
+      "alertSubTitleCopy": "E-mail copied to the clipboard"
     },
     "settings": {
       "changeLanguage": "Language",
@@ -140,6 +163,7 @@
     "settings": "Settings",
     "language": "Language",
     "passwordChange": "Change Password",
-    "callRequest": "Call request"
+    "callRequest": "Call request",
+    "faq": "Application information"
   }
 }

@@ -13,6 +13,7 @@ export { default as Profile } from './Profile';
 export { default as EditProfile } from './Profile/EditProfile';
 export { default as Reward } from './Profile/Reward';
 export { default as CallRequest } from './Profile/CallRequest';
+export { default as FAQ } from './Profile/FAQ';
 
 // SETTINGS
 export { default as Settings } from './Profile/Settings';

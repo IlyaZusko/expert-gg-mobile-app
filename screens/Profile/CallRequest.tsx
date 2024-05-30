@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
+import * as Clipboard from 'expo-clipboard';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { CallRequestValidationSchema } from './utils';
@@ -33,6 +34,7 @@ const CallRequest = () => {
     keyPrefix: 'input',
   });
   const { session } = useSession();
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
 
   const formik = useFormik<CallRequestValues>({
     initialValues,
@@ -42,6 +44,7 @@ const CallRequest = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       const { name, phone, question } = values;
+      setIsButtonLoading(true);
       try {
         const docRef = await addDoc(collection(db, 'callRequest'), {
           userName: name,
@@ -54,16 +57,27 @@ const CallRequest = () => {
         updateDoc(doc(db, 'callRequest', docRef.id), {
           id: docRef.id,
         });
+        setIsButtonLoading(false);
         Toast.show({
           type: 'success',
           text1: t('alertMainTitle'),
           text2: t('alertSubTitle'),
         });
       } catch (err) {
+        setIsButtonLoading(false);
         console.log(err);
       }
     },
   });
+
+  const handleCopyEmail = async () => {
+    await Clipboard.setStringAsync('expert.gg.support@gmail.com');
+    Toast.show({
+      type: 'success',
+      text1: t('alertMainTitleCopy'),
+      text2: t('alertSubTitleCopy'),
+    });
+  };
 
   const { values, submitForm, setFieldValue, errors } = formik;
 
@@ -89,7 +103,21 @@ const CallRequest = () => {
         onChange={(v) => setFieldValue('question', v)}
         error={errors.question}
       />
-      <DefaultButton label={t('request')} onClick={() => submitForm()} />
+      <DefaultButton
+        label={t('request')}
+        onClick={() => submitForm()}
+        isLoading={isButtonLoading}
+      />
+      <View style={styles.mailWrapper}>
+        <Text style={styles.termsTitle}>{t('mailTip')}</Text>
+        <TouchableOpacity onPress={() => handleCopyEmail()}>
+          <Text
+            style={[styles.termsTitle, { textDecorationLine: 'underline' }]}
+          >
+            expert.gg.support@gmail.com
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -101,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: BLACK_COLOR,
     paddingHorizontal: 16,
-    paddingTop: 26,
+    paddingTop: 10,
     gap: 12,
   },
   tipTitle: {
@@ -110,5 +138,17 @@ const styles = StyleSheet.create({
     color: GREY_TEXT_COLOR,
     paddingBottom: 16,
     // paddingHorizontal: 16,
+  },
+  mailWrapper: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 14,
+    gap: 2,
+  },
+  termsTitle: {
+    fontFamily: 'Mont_500',
+    fontSize: 12,
+    color: GREY_TEXT_COLOR,
   },
 });
