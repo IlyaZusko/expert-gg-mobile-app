@@ -19,7 +19,11 @@ import {
   WHITE_COLOR,
 } from '@/helpers/constants/Colors';
 import { useAppSelector } from '@/helpers/hooks';
-import { setIsAuthError } from '@/store/service/userSlice';
+import {
+  setIsAuthError,
+  setIsBlockedError,
+  setIsNotVerifyError,
+} from '@/store/service/userSlice';
 
 interface LogInValues {
   email: string;
@@ -27,10 +31,10 @@ interface LogInValues {
 }
 
 const initialValues = {
-  email: 'ilyazusko.dev@gmail.com',
-  password: 'Gjgeufq1',
-  // email: '',
-  // password: '',
+  // email: 'ilyazusko.dev@gmail.com',
+  // password: 'Gjgeufq1',
+  email: '',
+  password: '',
 };
 
 const Login = () => {
@@ -58,11 +62,21 @@ const Login = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       const { email, password } = values;
+      dispatch(setIsBlockedError(false));
+      dispatch(setIsNotVerifyError(false));
+      dispatch(setIsAuthError(false));
       signIn(email, password);
     },
   });
 
   const { values, submitForm, setFieldValue, errors } = formik;
+
+  const handleChangeValue = (field: string, value: string) => {
+    dispatch(setIsBlockedError(false));
+    dispatch(setIsNotVerifyError(false));
+    dispatch(setIsAuthError(false));
+    setFieldValue(field, value);
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -82,10 +96,7 @@ const Login = () => {
               placeholder={tInput('emailPlaceholder')}
               inputType="email"
               value={values.email}
-              onChange={(v) => {
-                dispatch(setIsAuthError(false));
-                setFieldValue('email', v);
-              }}
+              onChange={(v) => handleChangeValue('email', v)}
               error={errors.email}
             />
             <OutlinedInput
@@ -93,10 +104,7 @@ const Login = () => {
               inputType="text"
               isSecureText
               value={values.password}
-              onChange={(v) => {
-                dispatch(setIsAuthError(false));
-                setFieldValue('password', v);
-              }}
+              onChange={(v) => handleChangeValue('password', v)}
               error={errors.password}
             />
             {isAuthError && (

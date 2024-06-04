@@ -86,7 +86,11 @@
     }
   },
   "myVotes": {
-    "emptyTitle": "You haven't placed any bets yet"
+    "emptyTitle": "You haven't placed any bets yet",
+    "active": "Active",
+    "lose": "Lose",
+    "win": "Win",
+    "voted": "Voted"
   },
   "play": {
     "today": "Today",

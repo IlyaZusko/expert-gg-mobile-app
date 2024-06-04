@@ -26,7 +26,7 @@ interface PasswordRecoveryvalues {
 }
 
 const initialValues = {
-  email: 'ilyazusko.dev@gmail.com',
+  email: '',
 };
 
 const PasswordReset = () => {

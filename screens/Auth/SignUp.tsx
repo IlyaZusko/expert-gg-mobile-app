@@ -42,14 +42,14 @@ interface SignUpValues {
 }
 
 const initialValues = {
-  username: 'IlyaZusko',
-  email: 'ilyazusko.dev@gmail.com',
-  password: 'Gjgeufq1',
-  passwordConfirm: 'Gjgeufq1',
-  // username: '',
-  // email: '',
-  // password: '',
-  // passwordConfirm: '',
+  // username: 'IlyaZusko',
+  // email: 'ilyazusko.dev@gmail.com',
+  // password: 'Gjgeufq1',
+  // passwordConfirm: 'Gjgeufq1',
+  username: '',
+  email: '',
+  password: '',
+  passwordConfirm: '',
 };
 
 const SignUp = () => {

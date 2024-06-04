@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -18,9 +19,12 @@ const VoteStatusBadge: React.FC<IVoteStatusBadge> = ({
   isWin,
   isForMatches,
 }) => {
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'myVotes',
+  });
   return isForMatches ? (
     <View style={styles.votedBadge}>
-      <Text style={styles.votedBadgeTitle}>Voted</Text>
+      <Text style={styles.votedBadgeTitle}>{t('voted')}</Text>
     </View>
   ) : (
     <View
@@ -38,7 +42,7 @@ const VoteStatusBadge: React.FC<IVoteStatusBadge> = ({
       ]}
     >
       <Text style={styles.votedBadgeTitle}>
-        {isWin === null ? 'Активная' : isWin === true ? 'Победа' : 'Поражение'}
+        {isWin === null ? t('active') : isWin === true ? t('win') : t('lose')}
       </Text>
     </View>
   );
@@ -51,7 +55,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 8,
     top: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     paddingVertical: 4,
     borderWidth: 1,
     borderColor: ACCENT_BLUE_COLOR,

@@ -80,6 +80,7 @@ const EditProfile = () => {
       await updateDoc(doc(db, 'users', session), {
         avatar_url: '',
       });
+      setImage(null);
       Toast.show({
         type: 'success',
         text1: t('alertMainTitleAvatarDelete'),
