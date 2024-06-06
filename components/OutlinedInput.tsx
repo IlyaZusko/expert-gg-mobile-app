@@ -58,6 +58,7 @@ const OutlinedInput: React.FC<IOutlinedInput> = ({
         >
           <TextInput
             placeholder={placeholder}
+            placeholderTextColor={INACTIVE_COLOR}
             secureTextEntry={isHide}
             value={value}
             onChangeText={(e) => onChange(e)}
@@ -88,6 +89,7 @@ const OutlinedInput: React.FC<IOutlinedInput> = ({
       ) : (
         <TextInput
           placeholder={placeholder}
+          placeholderTextColor={INACTIVE_COLOR}
           value={value}
           onChangeText={(e) => onChange(e)}
           style={[
