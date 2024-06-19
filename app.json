@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ExpertGG",
-    "slug": "ExpertGG",
+    "slug": "expert-gg-mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

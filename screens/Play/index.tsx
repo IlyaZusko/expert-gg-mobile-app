@@ -1,9 +1,17 @@
 /* eslint-disable indent */
-import { doc, onSnapshot } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { UIActivityIndicator } from 'react-native-indicators';
+import { useDispatch } from 'react-redux';
 
 import {
   GameSelectorButton,
@@ -20,7 +28,12 @@ import {
   WEEK_DATE_QUERY,
 } from '@/helpers/constants/DatesQuery';
 import { LIST_OF_GAMES } from '@/helpers/constants/ListOfGames';
-import { IPath } from '@/store/models/Matches';
+import { useAppSelector } from '@/helpers/hooks';
+import { IMatchesList, IPath } from '@/store/models/Matches';
+import {
+  clearListTestMatches,
+  setListTestMatches,
+} from '@/store/service/betsSlice';
 import { useFetchAllMatchesQuery } from '@/store/service/pandaScoreApi';
 
 const Play = () => {
@@ -79,6 +92,32 @@ const Play = () => {
     });
   }
 
+  // CODE FOR DEMO
+
+  const dispatch = useDispatch();
+
+  const { listTestMatches } = useAppSelector((state) => state.bets);
+
+  useEffect(() => {
+    const q = query(collection(db, 'testMatches'), where('winner', '==', null));
+    getDocs(q).then((doc) => {
+      dispatch(clearListTestMatches());
+      doc.forEach((doc) => {
+        // console.log(doc.data());
+        dispatch(setListTestMatches(doc.data()));
+      });
+      // const matchesId: number[] = [];
+      // const newListTestMatches: IMatchesList[] = [];
+      // querySnapshot.forEach((doc) => {
+      //   matchesId.push(doc.data().match_id);
+      //   newListBets.push(doc.data() as IBet);
+      // });
+      // doc.forEach((item) => {
+      //   dispatch(setListTestMatches(item));
+      // });
+    });
+  }, [isFetching, selectedFilter, selectedGame]);
+
   return (
     <View style={styles.wrapper}>
       <View>
@@ -100,7 +139,9 @@ const Play = () => {
         </ScrollView>
       </View>
       <FlatList
-        data={data}
+        data={
+          listTestMatches.length && data ? [...listTestMatches, ...data] : data
+        }
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item, index }) =>
           isFetching && index === 0 ? (

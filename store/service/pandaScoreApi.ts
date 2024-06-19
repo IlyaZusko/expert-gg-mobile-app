@@ -49,26 +49,6 @@ export const pandaScoreApi = createApi({
         return response;
       },
     }),
-    // fetchBetsMatches: build.query<IVotedMatch[] | null, string | null>({
-    //   query: (params) => ({
-    //     url: params ? `/matches?${params}&sort=` : '/',
-    //     method: 'GET',
-    //   }),
-    //   transformResponse: async (response: IMatchesList[]) => {
-    //     console.log(response);
-    //     const userid = await SecureStore.getItemAsync('session');
-    //     const bets: IBet[] = [];
-    //     const q = query(collection(db, 'bets'), where('user_id', '==', userid));
-    //     const querySnapshot = await getDocs(q);
-    //     querySnapshot.forEach((bet) => bets.push(bet.data() as IBet));
-    //     const votedMatches = response.map((match) => {
-    //       const bet = bets.find((bet: IBet) => bet.match_id === match.id);
-    //       return { ...match, ...bet };
-    //     });
-    //     return votedMatches;
-    //   },
-    //   providesTags: ['VotedMatches'],
-    // }),
     fetchBetsMatches: build.query<IVotedMatch[] | null, string | null>({
       query: (params) => ({
         url: params ? `/matches?${params}&sort=` : '/',
@@ -82,8 +62,6 @@ export const pandaScoreApi = createApi({
         const q = query(collection(db, 'bets'), where('user_id', '==', userid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((bet) => bets.push(bet.data() as IBet));
-        // console.log(response);
-        // console.log(typeof response);
         if (response.length) {
           const votedMatches: IVotedMatch[] = response.map((match) => {
             const bet = bets.find((bet: IBet) => bet.match_id === match.id);
