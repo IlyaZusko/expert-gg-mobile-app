@@ -33,8 +33,8 @@ const TeamButtonSelect: React.FC<ITeamButton> = ({
   isSelected,
 }) => {
   const trimString = (str: string) => {
-    if (str.length > 13) {
-      return str.slice(0, 13).concat('...');
+    if (str.length > 12) {
+      return str.slice(0, 12).concat('...');
     }
     return str;
   };
@@ -45,7 +45,7 @@ const TeamButtonSelect: React.FC<ITeamButton> = ({
         styles.teamButton,
         {
           justifyContent: 'flex-end',
-          paddingRight: 16,
+          paddingHorizontal: 16,
           borderColor: isSelected ? ACCENT_BLUE_COLOR : INACTIVE_COLOR,
           flexDirection: isLeftAlign ? 'row' : 'row-reverse',
         },

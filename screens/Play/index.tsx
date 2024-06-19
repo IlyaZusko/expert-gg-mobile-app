@@ -103,18 +103,17 @@ const Play = () => {
     getDocs(q).then((doc) => {
       dispatch(clearListTestMatches());
       doc.forEach((doc) => {
-        // console.log(doc.data());
-        dispatch(setListTestMatches(doc.data()));
+        const data = doc.data();
+        const match: IMatchesList = {
+          id: data.id,
+          begin_at: data.begin_at,
+          league: data.league,
+          opponents: data.opponents,
+          videogame: data.videogame,
+          winner: data.winner,
+        };
+        dispatch(setListTestMatches(match));
       });
-      // const matchesId: number[] = [];
-      // const newListTestMatches: IMatchesList[] = [];
-      // querySnapshot.forEach((doc) => {
-      //   matchesId.push(doc.data().match_id);
-      //   newListBets.push(doc.data() as IBet);
-      // });
-      // doc.forEach((item) => {
-      //   dispatch(setListTestMatches(item));
-      // });
     });
   }, [isFetching, selectedFilter, selectedGame]);
 
