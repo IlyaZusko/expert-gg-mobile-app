@@ -70,8 +70,8 @@ const VoteBlock = ({ item }: IVoteBlock) => {
       if (isWin === true) {
         await updateDoc(doc(db, 'users', session), {
           count_wins: increment(1),
-          total_earn: increment(targetBet.coins_amount * 2),
-          coins: increment(targetBet.coins_amount * 2),
+          total_earn: increment(Number(targetBet.coins_amount) * 2),
+          coins: increment(Number(targetBet.coins_amount) * 2),
         });
       }
     }

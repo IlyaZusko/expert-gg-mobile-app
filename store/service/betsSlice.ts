@@ -5,12 +5,14 @@ import { IMatchesList } from '../models/Matches';
 
 export interface IProductsState {
   listBets: IBet[];
+  listTestBets: IBet[];
   listTestMatches: IMatchesList[];
 }
 
 const initialState: IProductsState = {
   listBets: [] as IBet[],
   listTestMatches: [] as IMatchesList[],
+  listTestBets: [] as IBet[],
 };
 
 export const betsSlice = createSlice({
@@ -35,11 +37,23 @@ export const betsSlice = createSlice({
         state.listTestMatches = [...state.listTestMatches, action.payload];
       }
     },
+    setListTestBets: (state, action: PayloadAction<IBet>) => {
+      if (
+        !state.listTestBets.find(
+          (bets) => bets.document_id === action.payload.document_id,
+        )
+      ) {
+        state.listTestBets = [...state.listTestBets, action.payload];
+      }
+    },
     clearListTestMatches: (state) => {
       state.listTestMatches = [] as IMatchesList[];
     },
     clearListBets: (state) => {
       state.listBets = [] as IBet[];
+    },
+    clearListTestBets: (state) => {
+      state.listTestBets = [] as IBet[];
     },
   },
 });
@@ -49,4 +63,6 @@ export const {
   clearListBets,
   setListTestMatches,
   clearListTestMatches,
+  setListTestBets,
+  clearListTestBets,
 } = betsSlice.actions;

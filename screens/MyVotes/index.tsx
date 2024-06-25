@@ -1,4 +1,11 @@
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native';
@@ -29,7 +36,9 @@ const MyVotes = () => {
       const matchesId: number[] = [];
       const newListBets: IBet[] = [];
       querySnapshot.forEach((doc) => {
-        matchesId.push(doc.data().match_id);
+        if (!doc.data().isTestMatch) {
+          matchesId.push(doc.data().match_id);
+        }
         newListBets.push(doc.data() as IBet);
       });
       newListBets.forEach((item) => {
@@ -48,6 +57,28 @@ const MyVotes = () => {
 
   const onRefresh = () => {
     setRefreshing(true);
+    if (data) {
+      data.forEach(async (bet) => {
+        if (Object.keys(bet).includes('isTestMatch') && bet.document_id) {
+          if (bet.match_id === 98248932) {
+            await updateDoc(doc(db, 'testMatches', bet.document_id), {
+              winner: {
+                id: bet.bet_target_id,
+                name: bet.bet_target_name,
+              },
+            }).catch((e) => console.log(e));
+          }
+          if (bet.match_id === 324366563) {
+            await updateDoc(doc(db, 'testMatches', bet.document_id), {
+              winner: {
+                id: 1,
+                name: '1',
+              },
+            });
+          }
+        }
+      });
+    }
     refetch();
     setRefreshing(false);
   };

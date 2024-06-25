@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { Image } from 'expo-image';
@@ -68,7 +69,7 @@ const MatchBlock: React.FC<IMatchBlock> = ({
       try {
         const coinsAmount = Number(values.coinsAmount);
         if (coins && coinsAmount <= coins && coinsAmount !== 0) {
-          const betData = {
+          const betData ={
             coins_amount: coinsAmount,
             match_id: item.id,
             bet_target_id: selectedTeamId,
@@ -78,17 +79,25 @@ const MatchBlock: React.FC<IMatchBlock> = ({
             user_id: userId,
           };
           if (userId) {
+            if (item.isTestMatch && item.document_id) {
+              await updateDoc(doc(db, 'testMatches', item.document_id), {
+                voted: true,
+              });
+            }
             await updateDoc(doc(db, 'users', userId), {
               coins: coins - coinsAmount,
             });
-            const bet = await addDoc(collection(db, 'bets'), betData);
+            setSelectedTeam(null);
+            setSelectedTeamId(null);
+            refetch();
+            const bet = await addDoc(
+              collection(db, 'bets'),
+              item.isTestMatch ? {isTestMatch: true, testMatchId: item.document_id, ...betData} : betData,
+            );
             await updateDoc(doc(db, 'bets', bet.id), {
               document_id: bet.id,
             });
           }
-          setSelectedTeam(null);
-          setSelectedTeamId(null);
-          refetch();
         } else {
           setFieldError('coinsAmount', tError('makeBet'));
         }

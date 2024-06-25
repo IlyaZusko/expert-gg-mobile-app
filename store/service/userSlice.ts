@@ -7,6 +7,7 @@ interface IInitialState {
   isAuthError: boolean;
   isBlockedError: boolean;
   isNotVerifyError: boolean;
+  userCoins: number;
 }
 
 const initialState: IInitialState = {
@@ -14,6 +15,7 @@ const initialState: IInitialState = {
   isAuthError: false,
   isBlockedError: false,
   isNotVerifyError: false,
+  userCoins: 0,
 };
 
 export const userSlice = createSlice({
@@ -32,6 +34,9 @@ export const userSlice = createSlice({
     setIsNotVerifyError: (state, action: PayloadAction<boolean>) => {
       state.isNotVerifyError = action.payload;
     },
+    setUserCoins: (state, action: PayloadAction<number>) => {
+      state.userCoins = action.payload;
+    },
   },
 });
 
@@ -40,4 +45,5 @@ export const {
   setIsAuthError,
   setIsBlockedError,
   setIsNotVerifyError,
+  setUserCoins,
 } = userSlice.actions;

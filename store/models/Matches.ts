@@ -12,6 +12,8 @@ export interface IMatchesList {
   };
   winner: IWinner | null;
   voted?: boolean;
+  isTestMatch?: boolean;
+  document_id?: string;
 }
 
 interface IWinner {

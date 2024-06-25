@@ -5,7 +5,6 @@ import {
   getDocs,
   onSnapshot,
   query,
-  where,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -99,7 +98,7 @@ const Play = () => {
   const { listTestMatches } = useAppSelector((state) => state.bets);
 
   useEffect(() => {
-    const q = query(collection(db, 'testMatches'), where('winner', '==', null));
+    const q = query(collection(db, 'testMatches'));
     getDocs(q).then((doc) => {
       dispatch(clearListTestMatches());
       doc.forEach((doc) => {
@@ -111,6 +110,9 @@ const Play = () => {
           opponents: data.opponents,
           videogame: data.videogame,
           winner: data.winner,
+          voted: data.voted,
+          isTestMatch: data.isTestMatch,
+          document_id: data.document_id,
         };
         dispatch(setListTestMatches(match));
       });
@@ -139,7 +141,12 @@ const Play = () => {
       </View>
       <FlatList
         data={
-          listTestMatches.length && data ? [...listTestMatches, ...data] : data
+          listTestMatches.length &&
+          selectedGame === 'dota2' &&
+          selectedFilter === 1 &&
+          data
+            ? [...listTestMatches, ...data]
+            : data
         }
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item, index }) =>
